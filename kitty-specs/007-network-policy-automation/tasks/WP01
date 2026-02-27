@@ -1,0 +1,20 @@
+WP: Network policy automation via GitHub PR (Octokit)
+Feature: 007-network-policy-automation
+Estimate: 2h
+Dependencies: WP01 (004-network-test-execution)
+
+Tasks:
+1. Add Octokit.Net NuGet package to HNW.Api.csproj
+2. Implement NetworkPolicyService.GeneratePolicyYaml(NetworkTestDefinition) — produces YAML for the egress allow rule
+3. Implement NetworkPolicyService.CreatePrAsync() — creates branch, commits YAML, opens PR
+4. Wire NetworkPolicyService into NetworkTestService.CreateAsync (call after save if policyStatus == Unknown)
+5. Add webhook handler (or poll) to update PolicyPrUrl status when PR merges
+6. Add GITHUB_PAT configuration to appsettings + Kubernetes Secret
+7. Update TestsPage.jsx PR badge to link to the opened PR
+
+Acceptance:
+- AC-007-01: Creating a new test automatically opens a PR in tenant-gitops-be808f
+- AC-007-02: PR contains valid NetworkPolicy YAML for the test's host/port/protocol
+- AC-007-03: PolicyPrUrl is stored and displayed as a clickable badge in the tests table
+- AC-007-04: PolicyStatus transitions Unknown → PrPending when PR created
+- AC-007-05: PolicyStatus transitions PrPending → PrMerged when PR merged

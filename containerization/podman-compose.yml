@@ -1,0 +1,75 @@
+# podman-compose.yml — HelloNetworkWorld local dev stack
+# Ryan Loiselle — Developer / Architect
+# GitHub Copilot — AI pair programmer / code generation
+# February 2026
+#
+# Local development: starts API, frontend, and MariaDB.
+# Run: podman-compose up -d
+# API:      http://localhost:5200
+# Frontend: http://localhost:8080
+# MariaDB:  localhost:3306 (hnw_dev / hnw_user / hnw_local_dev)
+# AI-assisted: compose file scaffolding; reviewed and directed by Ryan Loiselle.
+
+version: "3.9"
+
+services:
+
+  # ── MariaDB ────────────────────────────────────────────────────────────────
+  db:
+    image: mariadb:10.11
+    container_name: hnw-db
+    environment:
+      MARIADB_ROOT_PASSWORD: root_local_dev
+      MARIADB_DATABASE:      hnw_dev
+      MARIADB_USER:          hnw_user
+      MARIADB_PASSWORD:      hnw_local_dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - hnw-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── API ─────────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ..
+      dockerfile: containerization/Containerfile.api
+    container_name: hnw-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=db;Port=3306;Database=hnw_dev;User=hnw_user;Password=hnw_local_dev;"
+    ports:
+      - "5200:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
+      start_period: 40s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Frontend ────────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ..
+      dockerfile: containerization/Containerfile.frontend
+    container_name: hnw-frontend
+    environment: {}
+    volumes:
+      # Mount a local config.json to inject the API URL at runtime
+      - ./config.local.json:/usr/share/nginx/html/config.json:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+
+volumes:
+  hnw-db-data:

@@ -1,0 +1,20 @@
+WP: Quartz.NET job scheduler — TCP probe implementation
+Feature: 004-network-test-execution
+Estimate: 2h
+Dependencies: WP01 (003-network-test-config)
+
+Tasks:
+1. Implement NetworkTestJob (IJob) — TCP connect probe with timeout
+2. Implement INetworkProbeFactory returning correct INetworkProbe per ServiceType
+3. Implement TcpPortProbe (most common service type, used as base for all TCP-based types)
+4. Implement HttpEndpointProbe (uses HttpClient, checks response < 599)
+5. Implement DnsResolveProbe
+6. Register all jobs from the NetworkTestDefinitions table on API startup
+7. On new test create/update/delete, refresh Quartz scheduler
+
+Acceptance:
+- AC-004-01: TcpPort probe succeeds/fails correctly against a known open/closed port
+- AC-004-02: HttpEndpoint probe records latency in ms
+- AC-004-03: Failed probe stores ErrorMessage in NetworkTestResult
+- AC-004-04: Quartz job runs at the configured cron schedule
+- AC-004-05: Disabled tests do not trigger probes

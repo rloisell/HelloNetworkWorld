@@ -1,0 +1,9 @@
+/* App.css — HelloNetworkWorld app-level layout
+ * Minimal overrides; most styles live in index.css.
+ */
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

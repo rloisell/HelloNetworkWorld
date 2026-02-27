@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "HNW.Api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5200"
+      },
+      "applicationUrl": "http://localhost:5200"
+    }
+  }
+}

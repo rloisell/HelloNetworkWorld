@@ -1,0 +1,19 @@
+WP: Keycloak OIDC integration (Phase 2)
+Feature: 006-oidc-auth
+Estimate: 2h
+Dependencies: WP01 (001-project-scaffold)
+
+Tasks:
+1. Register GETOK service client for HNW in common-sso.justice.gov.bc.ca realm standard
+2. Update AuthConfig.js — switch from no-op to real OidcClient configuration
+3. Add AuthProvider wrapping App.jsx routes
+4. Protect write endpoints (POST/PUT/DELETE) with [Authorize] attribute in API
+5. Add Keycloak JWT validation middleware (Microsoft.AspNetCore.Authentication.JwtBearer)
+6. Update config.json / values.yaml to include keycloakAuthority and clientId
+7. Add login/logout buttons to BCGovHeader in App.jsx
+
+Acceptance:
+- AC-006-01: Unauthenticated users can view dashboard and docs (GET read-only)
+- AC-006-02: Creating/updating/deleting tests requires Keycloak login
+- AC-006-03: IDIR user can log in via common-sso.justice.gov.bc.ca
+- AC-006-04: JWT is validated server-side; tampered tokens return 401

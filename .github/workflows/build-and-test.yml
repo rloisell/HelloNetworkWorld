@@ -1,0 +1,83 @@
+# build-and-test.yml — HelloNetworkWorld PR validation
+# Ryan Loiselle — Developer / Architect
+# GitHub Copilot — AI pair programmer / code generation
+# February 2026
+#
+# Triggers on pull_request targeting main or develop.
+# Runs dotnet test and npm build.
+# AI-assisted: GitHub Actions workflow scaffolding; reviewed and directed by Ryan Loiselle.
+
+name: Build and Test
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "src/**"
+      - "*.sln"
+      - ".github/workflows/build-and-test.yml"
+
+jobs:
+
+  # ── .NET API ────────────────────────────────────────────────────────────────
+  test-api:
+    name: .NET Test
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root_ci
+          MARIADB_DATABASE:      hnw_test_ci
+          MARIADB_USER:          hnw_user
+          MARIADB_PASSWORD:      hnw_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore HNW.sln
+
+      - name: Build
+        run: dotnet build HNW.sln --no-restore -c Release
+
+      - name: Test
+        run: dotnet test HNW.sln --no-build -c Release --logger trx
+        env:
+          ConnectionStrings__DefaultConnection: "Server=127.0.0.1;Port=3306;Database=hnw_test_ci;User=hnw_user;Password=hnw_ci;"
+
+  # ── React Frontend ──────────────────────────────────────────────────────────
+  test-frontend:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: src/HNW.WebClient/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src/HNW.WebClient
+        run: npm ci
+
+      - name: Build
+        working-directory: src/HNW.WebClient
+        run: npm run build

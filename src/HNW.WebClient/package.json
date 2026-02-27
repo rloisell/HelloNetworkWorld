@@ -1,0 +1,42 @@
+/*
+ * package.json — HNW.WebClient
+ * Ryan Loiselle — Developer / Architect
+ * GitHub Copilot — AI pair programmer / code generation
+ * February 2026
+ *
+ * React 18 / Vite 6 SPA with BC Gov Design System and TanStack Query v5.
+ * AI-assisted: dependency selection; reviewed and directed by Ryan Loiselle.
+ */
+{
+  "name": "hnw-webclient",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0",
+    "@tanstack/react-query": "^5.56.0",
+    "@tanstack/react-query-devtools": "^5.56.0",
+    "axios": "^1.7.7",
+    "recharts": "^2.12.7",
+    "@bcgov/design-tokens": "^3.1.0",
+    "react-oidc-context": "^3.2.0",
+    "oidc-client-ts": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "vite": "^6.0.0"
+  }
+}

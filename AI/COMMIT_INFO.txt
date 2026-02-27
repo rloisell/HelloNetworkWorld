@@ -1,0 +1,10 @@
+# AI/COMMIT_INFO.txt — HelloNetworkWorld
+# Ryan Loiselle — Developer / Architect
+# GitHub Copilot — AI pair programmer / code generation
+# February 2026
+#
+# Append-only record of major AI-driven commits and pushes.
+
+# ── Session 1 — 2026-02-27 ──────────────────────────────────────────────────
+# No commits yet — scaffold created locally, repository not yet initialized.
+# Next step: git init, create bcgov-c/HelloNetworkWorld on GitHub, push.

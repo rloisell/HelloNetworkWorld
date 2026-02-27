@@ -1,0 +1,60 @@
+# .gitignore — HelloNetworkWorld
+# .NET + Node + Python + containers + macOS + VS Code
+
+# ── .NET ─────────────────────────────────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.nupkg
+*.snupkg
+.nuget/
+TestResults/
+publish/
+
+# ── Node / npm ───────────────────────────────────────────────────────────────
+node_modules/
+dist/
+.npm
+.eslintcache
+
+# ── Vite ─────────────────────────────────────────────────────────────────────
+src/HNW.WebClient/dist/
+src/HNW.WebClient/.vite/
+
+# ── Python / spec-kitty ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# ── Secrets — never commit ───────────────────────────────────────────────────
+*.env
+.env.*
+**/appsettings.Production.json
+**/appsettings.Secret*.json
+
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── VS Code ──────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+# Keep .vscode/extensions.json tracked
+
+# ── Containers ───────────────────────────────────────────────────────────────
+*.tar
+*.image
+
+# ── Diagrams export ──────────────────────────────────────────────────────────
+diagrams/export/
+
+# ── Build artifacts ──────────────────────────────────────────────────────────
+*.log
+coverage/

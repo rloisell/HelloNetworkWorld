@@ -1,0 +1,17 @@
+WP: Dashboard summary stats and trendline data API
+Feature: 005-health-reporting
+Estimate: 1.5h
+Dependencies: WP01 (004-network-test-execution)
+
+Tasks:
+1. Implement GET /api/network-tests/{id}/summary returning TestResultSummaryDto
+2. Implement GET /api/network-tests/dashboard returning aggregate summary across all tests
+3. Implement NetworkTestStateChange recording in NetworkTestJob (detect pass↔fail transitions)
+4. Verify DashboardPage.jsx charts render with real data
+5. Add /health/network endpoint returning aggregate pass/fail counts
+
+Acceptance:
+- AC-005-01: Dashboard shows correct pass/fail counts across all enabled tests
+- AC-005-02: Trendline chart shows last 24 data points per test (configurable)
+- AC-005-03: State change timeline shows correct timestamps for pass↔fail transitions
+- AC-005-04: /health/network returns 200 when all tests passing, 503 when ≥1 failing

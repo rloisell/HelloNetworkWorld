@@ -1,0 +1,56 @@
+# Containerfile.api — HelloNetworkWorld API
+# Ryan Loiselle — Developer / Architect
+# GitHub Copilot — AI pair programmer / code generation
+# February 2026
+#
+# Multi-stage build: .NET 10 SDK → ASP.NET Core 10 runtime.
+# Port 8080, non-root appuser, health check at /health/live.
+# AI-assisted: multi-stage build scaffolding; reviewed and directed by Ryan Loiselle.
+
+# ── STAGE 1: BUILD ────────────────────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
+WORKDIR /src
+
+# Copy project files first for layer caching on restore
+COPY src/HNW.Api/HNW.Api.csproj     src/HNW.Api/
+COPY src/HNW.Data/HNW.Data.csproj   src/HNW.Data/
+
+RUN dotnet restore src/HNW.Api/HNW.Api.csproj
+
+# Copy all source and publish
+COPY src/HNW.Api/   src/HNW.Api/
+COPY src/HNW.Data/  src/HNW.Data/
+
+RUN dotnet publish src/HNW.Api/HNW.Api.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore
+
+# ── STAGE 2: RUNTIME ──────────────────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+
+# Install curl for health check probe
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
+# Non-root user (Emerald security requirement)
+RUN groupadd --gid 10001 appgroup && \
+    useradd  --uid 10001 --gid appgroup --no-create-home appuser
+
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+# Ownership for non-root user
+RUN chown -R appuser:appgroup /app
+
+USER appuser
+
+# Emerald: always expose port 8080 — never 80/443/5000
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8080/health/live || exit 1
+
+ENTRYPOINT ["dotnet", "HNW.Api.dll"]

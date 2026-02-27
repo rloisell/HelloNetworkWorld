@@ -1,0 +1,54 @@
+# codeql.yml — HelloNetworkWorld CodeQL scanning
+# Ryan Loiselle — Developer / Architect
+# GitHub Copilot — AI pair programmer / code generation
+# February 2026
+#
+# Runs CodeQL on push/PR for C# and JavaScript.
+# AI-assisted: CodeQL workflow scaffolding; reviewed and directed by Ryan Loiselle.
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "src/**"
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "src/**"
+  schedule:
+    # Weekly scan regardless of commits
+    - cron: "0 8 * * 1"
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [csharp, javascript-typescript]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended
+
+      # .NET: autobuild handles the solution
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"

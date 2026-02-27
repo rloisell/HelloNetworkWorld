@@ -1,0 +1,75 @@
+path,action,notes
+README.md,created,Project overview — architecture diagram, feature table, quick start
+CODING_STANDARDS.md,created,Coding standards derived from rl-project-template with HNW-specific additions
+.gitignore,created,.NET + Node + Python + containers ignore rules
+.github/copilot-instructions.md,created,AI guardrails with HNW domain rules (network test engine, NetworkPolicy, Emerald facts)
+.github/dependabot.yml,created,NuGet + npm automated dependency monitoring
+.github/agents/bc-gov-standards.agent.md,created,AI agent skill for BC Gov development and design standards
+.github/agents/network-policy.agent.md,created,AI agent skill for Emerald NetworkPolicy generation
+.github/agents/openshift-health.agent.md,created,AI agent skill for OpenShift health check and resource inspection
+.github/agents/spec-kitty.agent.md,created,AI agent skill for spec-first development workflow
+.github/workflows/build-and-push.yml,created,GitHub Actions CI — build containers and push to Artifactory
+.github/workflows/build-and-test.yml,created,GitHub Actions CI — .NET test + React build on PR
+.github/workflows/codeql.yml,created,CodeQL security scanning
+AI/nextSteps.md,created,MASTER TODO with 15 items across 5 tiers + session history
+AI/WORKLOG.md,created,Session 1 worklog
+AI/CHANGES.csv,created,This file
+AI/COMMANDS.sh,created,Shell command audit trail
+AI/COMMIT_INFO.txt,created,Commit metadata record
+containerization/Containerfile.api,created,.NET 10 multi-stage build — sdk:10.0 build + aspnet:10.0 runtime
+containerization/Containerfile.frontend,created,Node 22 build + nginx:alpine runtime
+containerization/nginx.conf,created,SPA routing + /config.json endpoint for runtime VITE_API_URL
+containerization/podman-compose.yml,created,Local dev stack (api + frontend + mariadb)
+docs/deployment/DEPLOYMENT_ANALYSIS.md,created,HNW-specific Emerald deployment analysis
+docs/deployment/STANDARDS.md,created,Reference copy of Emerald deployment standards
+docs/local-development/README.md,created,Local setup guide (ports services credentials)
+docs/development-history.md,created,Session-by-session development notes skeleton
+diagrams/README.md,created,Required diagram list and export commands
+kitty-specs/001-project-scaffold/spec.md,created,Feature spec for project scaffold
+kitty-specs/001-project-scaffold/plan.md,created,Implementation plan for project scaffold
+kitty-specs/002-documentation-hub/spec.md,created,Feature spec for documentation hub
+kitty-specs/002-documentation-hub/plan.md,created,Implementation plan for documentation hub
+kitty-specs/003-network-test-config/spec.md,created,Feature spec for network test configuration CRUD
+kitty-specs/003-network-test-config/plan.md,created,Implementation plan for network test config
+kitty-specs/004-network-test-execution/spec.md,created,Feature spec for network test execution engine
+kitty-specs/004-network-test-execution/plan.md,created,Implementation plan for test execution engine
+kitty-specs/005-health-reporting/spec.md,created,Feature spec for health check reporting dashboard
+kitty-specs/005-health-reporting/plan.md,created,Implementation plan for health reporting
+kitty-specs/006-oidc-auth/spec.md,created,Feature spec for Keycloak OIDC auth
+kitty-specs/006-oidc-auth/plan.md,created,Implementation plan for OIDC auth
+kitty-specs/007-network-policy-automation/spec.md,created,Feature spec for GitOps network policy automation
+kitty-specs/007-network-policy-automation/plan.md,created,Implementation plan for network policy automation
+src/HNW.Api/HNW.Api.csproj,created,.NET 10 Web API project file with NuGet references
+src/HNW.Api/Program.cs,created,ASP.NET Core composition root skeleton
+src/HNW.Api/appsettings.json,created,App configuration skeleton
+src/HNW.Api/appsettings.Development.json,created,Development overrides
+src/HNW.Data/HNW.Data.csproj,created,EF Core data layer project file
+src/HNW.Data/ApplicationDbContext.cs,created,EF Core DbContext with all entities
+src/HNW.Data/Models/NetworkTestDefinition.cs,created,Network test definition entity
+src/HNW.Data/Models/NetworkTestResult.cs,created,Network test result entity
+src/HNW.Data/Models/ReferenceLink.cs,created,Documentation reference link entity
+src/HNW.WebClient/package.json,created,React 18 + Vite + BC Gov DS dependencies
+src/HNW.WebClient/vite.config.js,created,Vite config with API proxy
+src/HNW.WebClient/src/App.jsx,created,Root React component with BC Gov layout
+HNW.sln,created,.NET solution file referencing HNW.Api and HNW.Data
+tenant-gitops-be808f/charts/hnw-app/Chart.yaml,created,Helm chart metadata for hnw-app
+tenant-gitops-be808f/charts/hnw-app/values.yaml,created,Default Helm values for hnw-app
+tenant-gitops-be808f/charts/hnw-app/templates/api-deployment.yaml,created,API Deployment manifest
+tenant-gitops-be808f/charts/hnw-app/templates/api-service.yaml,created,API Service manifest
+tenant-gitops-be808f/charts/hnw-app/templates/api-route.yaml,created,API Route manifest
+tenant-gitops-be808f/charts/hnw-app/templates/frontend-deployment.yaml,created,Frontend Deployment manifest
+tenant-gitops-be808f/charts/hnw-app/templates/frontend-service.yaml,created,Frontend Service manifest
+tenant-gitops-be808f/charts/hnw-app/templates/frontend-route.yaml,created,Frontend Route manifest
+tenant-gitops-be808f/charts/hnw-app/templates/frontend-configmap.yaml,created,Frontend config.json ConfigMap
+tenant-gitops-be808f/charts/hnw-app/templates/db-statefulset.yaml,created,MariaDB StatefulSet
+tenant-gitops-be808f/charts/hnw-app/templates/db-service.yaml,created,MariaDB Service
+tenant-gitops-be808f/charts/hnw-app/templates/networkpolicies.yaml,created,NetworkPolicy rules for hnw-app
+tenant-gitops-be808f/charts/hnw-app/templates/secret.yaml,created,Secret Shape for hnw-db-secret
+tenant-gitops-be808f/charts/hnw-app/templates/serviceaccount.yaml,created,ServiceAccount for hnw pods
+tenant-gitops-be808f/charts/hnw-app/templates/_helpers.tpl,created,Helm template helpers
+tenant-gitops-be808f/applications/argocd/be808f-hnw-dev.yaml,created,ArgoCD Application for be808f-dev
+tenant-gitops-be808f/applications/argocd/be808f-hnw-test.yaml,created,ArgoCD Application for be808f-test
+tenant-gitops-be808f/applications/argocd/be808f-hnw-prod.yaml,created,ArgoCD Application for be808f-prod
+tenant-gitops-be808f/deploy/hnw-dev_values.yaml,created,Dev environment helm values
+tenant-gitops-be808f/deploy/hnw-test_values.yaml,created,Test environment helm values
+tenant-gitops-be808f/deploy/hnw-prod_values.yaml,created,Prod environment helm values

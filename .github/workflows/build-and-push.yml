@@ -1,0 +1,105 @@
+# build-and-push.yml — HelloNetworkWorld CI/CD pipeline
+# Ryan Loiselle — Developer / Architect
+# GitHub Copilot — AI pair programmer / code generation
+# February 2026
+#
+# Triggers on push to develop (→ dev) and main (→ test/prod via ArgoCD image tag update).
+# Builds images, pushes to Artifactory dbe8-docker-local, then updates deploy values.
+# AI-assisted: GitHub Actions workflow scaffolding; reviewed and directed by Ryan Loiselle.
+
+name: Build and Push
+
+on:
+  push:
+    branches: [develop, main]
+    paths:
+      - "src/**"
+      - "containerization/**"
+      - "*.sln"
+      - ".github/workflows/build-and-push.yml"
+
+env:
+  REGISTRY:       artifacts.developer.gov.bc.ca/dbe8-docker-local
+  IMAGE_API:      hnw-api
+  IMAGE_FRONTEND: hnw-frontend
+
+jobs:
+
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── Image tag: short SHA ──────────────────────────────────────────────
+      - name: Set image tag
+        id: meta
+        run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+
+      # ── Login to Artifactory ──────────────────────────────────────────────
+      - name: Log in to Artifactory
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ARTIFACTORY_USER }}
+          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+      # ── Build & push API ──────────────────────────────────────────────────
+      - name: Build API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: containerization/Containerfile.api
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_API }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_API }}:latest
+
+      # ── Build & push frontend ─────────────────────────────────────────────
+      - name: Build frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: containerization/Containerfile.frontend
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_FRONTEND }}:latest
+
+  # ── Update deploy values (dev only) ─────────────────────────────────────────
+  update-dev-values:
+    name: Update Dev Image Tags
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout tenant-gitops-be808f
+        uses: actions/checkout@v4
+        with:
+          repository: bcgov-c/tenant-gitops-be808f
+          token: ${{ secrets.GITOPS_PAT }}
+          path: gitops
+
+      - name: Update API image tag in dev values
+        run: |
+          sed -i "s|tag:.*# api-tag|tag: ${{ needs.build-and-push.outputs.image-tag }} # api-tag|" \
+            gitops/deploy/hnw-dev_values.yaml
+
+      - name: Update frontend image tag in dev values
+        run: |
+          sed -i "s|tag:.*# frontend-tag|tag: ${{ needs.build-and-push.outputs.image-tag }} # frontend-tag|" \
+            gitops/deploy/hnw-dev_values.yaml
+
+      - name: Commit and push updated values
+        working-directory: gitops
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add deploy/hnw-dev_values.yaml
+          git commit -m "ci(hnw): bump dev images to ${{ needs.build-and-push.outputs.image-tag }}" || echo "No changes"
+          git push

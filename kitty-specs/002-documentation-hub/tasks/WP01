@@ -1,0 +1,15 @@
+WP: Seed reference links database + controller
+Feature: 002-documentation-hub
+Estimate: 1.5h
+Dependencies: WP01 (001-project-scaffold)
+
+Tasks:
+1. Create EF Core initial migration covering all 4 entities
+2. Add ReferenceLink seed data in ApplicationDbContext.OnModelCreating for all 7 categories
+3. Implement and test GET /api/reference-links with optional ?category= filter
+4. Verify DocsPage.jsx renders seeded links grouped by category tab
+
+Acceptance:
+- AC-002-01: All 7 category tabs render with ≥ 3 links each
+- AC-002-02: Category filter query param returns correct subset
+- AC-002-03: API returns 200 with at least 20 total links (seeded data)

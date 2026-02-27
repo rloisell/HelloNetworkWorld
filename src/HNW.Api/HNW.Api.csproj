@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+   * HNW.Api.csproj
+   * Ryan Loiselle — Developer / Architect
+   * GitHub Copilot — AI pair programmer / code generation
+   * February 2026
+   *
+   * ASP.NET Core 10 Web API for HelloNetworkWorld.
+   * AI-assisted: project file scaffolding; reviewed and directed by Ryan Loiselle.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>HNW.Api</RootNamespace>
+    <AssemblyName>HNW.Api</AssemblyName>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Data layer -->
+    <ProjectReference Include="..\HNW.Data\HNW.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- API / OpenAPI -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.*" />
+
+    <!-- Auth (Phase 2 — uncomment when implementing feature 006) -->
+    <!-- <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.*" /> -->
+
+    <!-- Scheduling -->
+    <PackageReference Include="Quartz" Version="3.*" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.*" />
+
+    <!-- Rate limiting (built-in to ASP.NET Core 10 — no extra package needed) -->
+
+    <!-- GitHub API client (feature 007) -->
+    <PackageReference Include="Octokit" Version="13.*" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+WP: Create NetworkTestDefinition CRUD UI
+Feature: 003-network-test-config
+Estimate: 2h
+Dependencies: WP01 (001-project-scaffold)
+
+Tasks:
+1. Verify TestsPage.jsx renders correctly against real API
+2. Implement POST /api/network-tests endpoint and validate with all 11 service types
+3. Add default port auto-population in controller (if not provided use ServiceType default)
+4. Cron expression validation: reject invalid 6-field Quartz patterns (server-side)
+5. Add FluentValidation or DataAnnotations to CreateNetworkTestRequest
+
+Acceptance:
+- AC-003-01: User can create a test with all 11 service types
+- AC-003-02: Selecting a service type pre-fills the default port
+- AC-003-03: Invalid cron expressions are rejected with a 400 and human-readable error
+- AC-003-04: Test appears in the tests table immediately after creation
