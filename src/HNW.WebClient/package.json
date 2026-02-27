@@ -25,7 +25,7 @@
     "@tanstack/react-query": "^5.56.0",
     "@tanstack/react-query-devtools": "^5.56.0",
     "axios": "^1.7.7",
-    "recharts": "^2.12.7",
+    "recharts": "^3.7.0",
     "@bcgov/design-tokens": "^3.1.0",
     "react-oidc-context": "^3.2.0",
     "oidc-client-ts": "^3.1.0"
