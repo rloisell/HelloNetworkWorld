@@ -21,7 +21,7 @@ jobs:
 
   # ── .NET API ────────────────────────────────────────────────────────────────
   test-api:
-    name: .NET Test
+    name: .NET Build & Test
     runs-on: ubuntu-latest
 
     services:
@@ -61,7 +61,7 @@ jobs:
 
   # ── React Frontend ──────────────────────────────────────────────────────────
   test-frontend:
-    name: Frontend Build
+    name: Frontend Build & Test
     runs-on: ubuntu-latest
 
     steps:
