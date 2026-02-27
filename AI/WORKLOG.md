@@ -86,3 +86,42 @@ AI agents, and template updates.
   tenant-gitops-be808f when a new test is saved with a destination not covered by existing NetworkPolicy
 - Self-learning agent pattern: each agent maintains a `## Knowledge Base` section at the bottom
   of its `.github/agents/` file; when an agent discovers a new pattern, it appends to this section
+
+---
+
+## 2026-02-27 — Session 2: External DB clarification, git init, push, GitOps PR
+
+**Objective**: Propagate external database clarification across all affected files,
+initialize git, push to GitHub, and create GitOps PR for tenant-gitops-be808f.
+
+### Actions taken
+- Propagated user clarification: `DatabaseServer` tests **external databases outside the namespace**
+  (Oracle 1521, SQL Server 1433, PostgreSQL 5432, MySQL 3306) — NOT the app's own MariaDB
+- Updated 8 files: NetworkTestDefinition.cs, TestsPage.jsx, CODING_STANDARDS.md,
+  copilot-instructions.md, kitty-spec 003, kitty-spec 004, networkpolicies.yaml,
+  network-policy.agent.md
+- Attempted bcgov-c repo creation — blocked by org policy (members cannot create repos)
+- Created repo under `rloisell/HelloNetworkWorld` (private) — will transfer to bcgov-c
+- `git init`, staged 83 files (6842 insertions), committed as `5b66521`
+- Pushed to `origin/main`
+- Created `feat/hnw-gitops` branch in tenant-gitops-be808f (20 files, 1042 insertions)
+- Pushed and opened PR #7: https://github.com/bcgov-c/tenant-gitops-be808f/pull/7
+
+### Files modified
+- `src/HNW.Data/Models/NetworkTestDefinition.cs` — DatabaseServer enum comment → external DB
+- `src/HNW.WebClient/src/pages/TestsPage.jsx` — label "External Database", port hint, no default port
+- `CODING_STANDARDS.md` — DatabaseServer table row + DatabaseProbeHandler in §7
+- `.github/copilot-instructions.md` — expanded service types list, external DB note
+- `kitty-specs/003-network-test-config/spec.md` — default ports table updated
+- `kitty-specs/004-network-test-execution/spec.md` — DatabaseProbeHandler added
+- `tenant-gitops-be808f/charts/hnw-app/templates/networkpolicies.yaml` — 4 external DB egress ports
+- `.github/agents/network-policy.agent.md` — external DB egress template + knowledge entry
+
+### Commits
+- `5b66521` — `feat: initial project scaffold — HelloNetworkWorld` (83 files, 6842 insertions)
+- `a09c7c7` — `feat: add hnw-app Helm chart + ArgoCD apps` (tenant-gitops-be808f, 20 files)
+
+### Outcomes / Notes
+- Repo lives at https://github.com/rloisell/HelloNetworkWorld until bcgov-c admin creates the org repo
+- GitOps PR #7 awaiting merge — once merged, ArgoCD will attempt to deploy (but images don't exist yet)
+- Next: `spec-kitty init`, then real `dotnet new` / `npm create vite` scaffolding

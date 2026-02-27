@@ -14,7 +14,7 @@
 
 | Status | # | Item | Effort | Notes / Depends On | Branch |
 |--------|---|------|--------|--------------------|--------|
-| ⬜ | **1** | Initialize git repo + push to bcgov-c/HelloNetworkWorld | Small | Must happen first | `main` |
+| ✅ | **1** | Initialize git repo + push to rloisell/HelloNetworkWorld | Small | Created under rloisell (bcgov-c repo creation requires admin). Transfer later. | `main` |
 | ⬜ | **2** | Run `spec-kitty init` and validate all 7 feature specs | Small | Depends on #1 | `docs/spec-kitty-init` |
 | ⬜ | **3** | Create `HNW.sln` + project scaffolds (Api, Data, WebClient) | Medium | Depends on #2 | `feat/001-project-scaffold` |
 
@@ -23,7 +23,7 @@
 | Status | # | Item | Effort | Notes / Depends On | Branch |
 |--------|---|------|--------|--------------------|--------|
 | ⬜ | **4** | Implement 001-project-scaffold (API health, DB migrations, React shell) | Large | Depends on #3 | `feat/001-project-scaffold` |
-| ⬜ | **5** | Add hnw-app Helm chart to tenant-gitops-be808f | Medium | Depends on #4 | `feat/hnw-gitops` |
+| ✅ | **5** | Add hnw-app Helm chart to tenant-gitops-be808f | Medium | PR #7 opened | `feat/hnw-gitops` |
 | ⬜ | **6** | GitHub Actions — build-and-push to Artifactory (hnw-api, hnw-frontend) | Medium | Depends on #5 | `feat/001-project-scaffold` |
 | ⬜ | **7** | Implement 002-documentation-hub (standards reference pages) | Medium | Depends on #4 | `feat/002-documentation-hub` |
 
@@ -74,10 +74,10 @@
 **Goal**: Create the GitHub repository in the bcgov-c organization and push the initial scaffold.
 
 **Steps**:
-1. Create repo at `https://github.com/bcgov-c/HelloNetworkWorld` (public, main branch)
-2. `git init` in `/Users/rloisell/Documents/developer/HelloNetworkWorld`
-3. `git remote add origin git@github.com:bcgov-c/HelloNetworkWorld.git`
-4. Initial commit and push
+1. Create repo at `https://github.com/rloisell/HelloNetworkWorld` ✅ (bcgov-c requires admin, using rloisell for now)
+2. `git init` in `/Users/rloisell/Documents/developer/HelloNetworkWorld` ✅
+3. `git remote add origin https://github.com/rloisell/HelloNetworkWorld.git` ✅
+4. Initial commit and push ✅ (commit `5b66521`, 83 files)
 
 **Acceptance criteria**:
 - [ ] Repo exists at `github.com/bcgov-c/HelloNetworkWorld`
@@ -126,6 +126,16 @@
 ## Session History
 
 > Newest entry first.
+
+### 2026-02-27 — Session 2: Git init, push, and GitOps PR
+
+**Commits:** `5b66521` (main — initial scaffold, 83 files, 6842 insertions)
+**Repo:** https://github.com/rloisell/HelloNetworkWorld (private, under rloisell — bcgov-c repo creation restricted to admins)
+**GitOps PR:** https://github.com/bcgov-c/tenant-gitops-be808f/pull/7 (feat/hnw-gitops — hnw-app Helm chart + ArgoCD apps)
+**Key decisions:**
+- Repo created under rloisell account; will transfer to bcgov-c when admin creates the repo
+- External database clarification propagated to all 8 affected files before initial commit
+- GitOps PR includes external DB egress ports (1521, 1433, 5432, 3306) in NetworkPolicies
 
 ### 2026-02-27 — Session 1: Project design and scaffold creation
 

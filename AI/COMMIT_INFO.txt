@@ -6,5 +6,17 @@
 # Append-only record of major AI-driven commits and pushes.
 
 # ── Session 1 — 2026-02-27 ──────────────────────────────────────────────────
-# No commits yet — scaffold created locally, repository not yet initialized.
-# Next step: git init, create bcgov-c/HelloNetworkWorld on GitHub, push.
+# No commits — scaffold created locally.
+
+# ── Session 2 — 2026-02-27 ──────────────────────────────────────────────────
+# Repo: https://github.com/rloisell/HelloNetworkWorld (private, transfer to bcgov-c pending)
+# Commit 5b66521 — feat: initial project scaffold — HelloNetworkWorld
+#   83 files, 6842 insertions
+#   Branch: main
+#   Pushed to: origin/main
+#
+# GitOps repo: bcgov-c/tenant-gitops-be808f
+# Commit a09c7c7 — feat: add hnw-app Helm chart + ArgoCD apps for HelloNetworkWorld
+#   20 files, 1042 insertions
+#   Branch: feat/hnw-gitops
+#   PR: https://github.com/bcgov-c/tenant-gitops-be808f/pull/7
