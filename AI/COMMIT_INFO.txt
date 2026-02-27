@@ -26,6 +26,9 @@
 # Fixed build: NetworkTestService.cs rewrite, OpenApiInfo conflict, EF Core Design, JsonStringEnumConverter
 # Created hnw_dev database, InitialCreate migration, applied schema
 # Verified full stack: API on localhost:5200, Vite on localhost:5175, MariaDB socket auth
-# Commit: (pending push)
+# Commit: b4edf72 — chore: local dev deployment - fix build errors, EF Core migration, socket auth
+#   16 files changed, 4624 insertions(+), 343 deletions(-)
+#   Branch: main
+#   Pushed to: origin/main
 #   Branch: feat/hnw-gitops
 #   PR: https://github.com/bcgov-c/tenant-gitops-be808f/pull/7
