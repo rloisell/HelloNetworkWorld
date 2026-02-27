@@ -20,3 +20,12 @@
 #   20 files, 1042 insertions
 #   Branch: feat/hnw-gitops
 #   PR: https://github.com/bcgov-c/tenant-gitops-be808f/pull/7
+
+# ── Session 3 — 2026-02-27 ──────────────────────────────────────────────────
+# Local dev deployment — DSC-modernization pattern
+# Fixed build: NetworkTestService.cs rewrite, OpenApiInfo conflict, EF Core Design, JsonStringEnumConverter
+# Created hnw_dev database, InitialCreate migration, applied schema
+# Verified full stack: API on localhost:5200, Vite on localhost:5175, MariaDB socket auth
+# Commit: (pending push)
+#   Branch: feat/hnw-gitops
+#   PR: https://github.com/bcgov-c/tenant-gitops-be808f/pull/7

@@ -125,3 +125,73 @@ initialize git, push to GitHub, and create GitOps PR for tenant-gitops-be808f.
 - Repo lives at https://github.com/rloisell/HelloNetworkWorld until bcgov-c admin creates the org repo
 - GitOps PR #7 awaiting merge — once merged, ArgoCD will attempt to deploy (but images don't exist yet)
 - Next: `spec-kitty init`, then real `dotnet new` / `npm create vite` scaffolding
+
+---
+
+## 2026-02-27 — Session 3: Local dev deployment (DSC-modernization pattern)
+
+**Objective**: Make the scaffolded HNW project actually build and run locally, mirroring
+DSC-modernization's bare metal dev pattern (socket auth MariaDB, `dotnet run` + `npm run dev`).
+
+### Actions taken
+- Studied DSC-modernization local dev setup: port 5115, socket `/tmp/mysql.sock`, Vite 5173
+- Audited local environment: .NET 10.0.103, Node 25.6.1, MariaDB 10.11.16, no container runtime
+- Created `hnw_dev` database alongside existing `dsc_dev` (no collision)
+- Fixed NuGet package version mismatches:
+  - `Pomelo.EntityFrameworkCore.MySql` 8.x → 9.0.0 (required for EF Core 9.0.0)
+  - Pinned `Microsoft.EntityFrameworkCore` to 9.0.0 in Data layer
+  - Added `AspNetCore.HealthChecks.MySql` 9.0.0
+  - Added `Microsoft.EntityFrameworkCore.Design` 9.0.0 (for `dotnet ef` migrations)
+  - Removed `Microsoft.AspNetCore.OpenApi` 10.x (version conflict with Swashbuckle's `Microsoft.OpenApi` 1.x)
+- Updated connection strings to socket auth: `Server=/tmp/mysql.sock;Database=hnw_dev;Uid=rloisell;SslMode=none;`
+- Rewrote `NetworkTestService.cs` — completely broken, 8 compilation errors:
+  - Changed `int id` → `Guid id` (matching entity PKs and interface)
+  - Changed `Host` → `Destination`, `Passed` → `IsSuccess` (matching entity properties)
+  - Removed non-existent properties (`TimeoutMs`, `Description`) from create/update
+  - Changed `IEnumerable<>` → `IReadOnlyList<>` returns (matching interface)
+  - Removed methods not on interface (`ToggleEnabledAsync`, `TriggerNowAsync`, `GetResultSummaryAsync`, `GetResultsAsync`)
+  - Added missing interface methods (`GetByIdAsync(Guid)`, `UpdateAsync(Guid, ...)`, `DeleteAsync(Guid)`, `ToggleAsync(Guid)`)
+  - Removed undefined DTOs (`TestResultSummaryDto`, `NetworkTestResultDto`)
+  - Used `NotFoundException` from GlobalExceptionHandler instead of null returns
+  - Added `using HNW.Api.Infrastructure;` import
+- Added `JsonStringEnumConverter` to `Program.cs` controller JSON options
+- Removed invalid JSON comment block from `package.json`
+- Created `InitialCreate` EF Core migration (4 tables: NetworkTestDefinitions, NetworkTestResults,
+  NetworkTestStateChanges, ReferenceLinks + __EFMigrationsHistory)
+- Applied migration to hnw_dev successfully
+- Started API (`dotnet run --launch-profile HNW.Api`) on port 5200
+- Verified endpoints:
+  - `GET /api` → project info (200)
+  - `GET /health/live` → Healthy (200)
+  - `GET /health/ready` → Healthy, MariaDB reachable (200)
+  - `GET /swagger/v1/swagger.json` → OpenAPI 3.0.1 doc generated
+  - Full CRUD cycle on `/api/network-tests` — POST, GET, GET by ID, PATCH toggle, DELETE all 2xx
+- Installed frontend deps: `npm install` → 225 packages, 0 vulnerabilities
+- Started Vite dev server on port 5175 with API proxy to localhost:5200
+- Verified: `GET http://localhost:5175/` → 200 (HTML), `GET http://localhost:5175/api` → proxied JSON
+
+### Files modified
+- `src/HNW.Api/Services/NetworkTestService.cs` — full rewrite (see above)
+- `src/HNW.Api/HNW.Api.csproj` — removed Microsoft.AspNetCore.OpenApi, added EF Core Design, health check
+- `src/HNW.Api/Program.cs` — added JsonStringEnumConverter to controller JSON options
+- `src/HNW.Api/appsettings.json` — added SslMode=none to connection string
+- `src/HNW.Api/appsettings.Development.json` — socket auth connection string
+- `src/HNW.Data/HNW.Data.csproj` — Pomelo 9.0.0, EF Core 9.0.0
+- `src/HNW.Data/Migrations/*_InitialCreate.cs` — generated EF Core migration
+- `src/HNW.Data/Migrations/ApplicationDbContextModelSnapshot.cs` — generated snapshot
+- `src/HNW.WebClient/package.json` — removed invalid comment block
+- `AI/nextSteps.md` — Session 3 history, updated MASTER TODO, repo transition commands
+- `AI/WORKLOG.md` — this entry
+- `AI/CHANGES.csv` — session 3 entries appended
+- `AI/COMMIT_INFO.txt` — session 3 commit metadata
+
+### Commits
+- (pending push — `chore: local dev deployment — session 3`)
+
+### Outcomes / Notes
+- Full stack running locally: API on 5200, Vite on 5175, MariaDB hnw_dev on /tmp/mysql.sock
+- Zero collision with DSC-modernization (different ports, different database)
+- Repo transition commands documented in nextSteps.md (GitHub Transfer or fresh repo)
+- EF Core migration auto-applies on startup via `db.Database.Migrate()` in Program.cs
+- Swashbuckle 6.x provides Swagger UI at http://localhost:5200/swagger
+- Next steps: spec-kitty init (#2), documentation hub (#7), GH Actions CI (#6)

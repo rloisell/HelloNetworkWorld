@@ -25,9 +25,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- API / OpenAPI -->
+    <!-- API / OpenAPI — Swashbuckle provides Swagger UI + OpenAPI doc gen -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.*" />
 
     <!-- Auth (Phase 2 — uncomment when implementing feature 006) -->
     <!-- <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.*" /> -->
@@ -35,6 +38,9 @@
     <!-- Scheduling -->
     <PackageReference Include="Quartz" Version="3.*" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.*" />
+
+    <!-- Health checks -->
+    <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="9.0.0" />
 
     <!-- Rate limiting (built-in to ASP.NET Core 10 — no extra package needed) -->
 

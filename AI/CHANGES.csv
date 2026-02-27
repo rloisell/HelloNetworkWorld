@@ -73,3 +73,16 @@ tenant-gitops-be808f/applications/argocd/be808f-hnw-prod.yaml,created,ArgoCD App
 tenant-gitops-be808f/deploy/hnw-dev_values.yaml,created,Dev environment helm values
 tenant-gitops-be808f/deploy/hnw-test_values.yaml,created,Test environment helm values
 tenant-gitops-be808f/deploy/hnw-prod_values.yaml,created,Prod environment helm values
+src/HNW.Api/Services/NetworkTestService.cs,modified,"Session 3: full rewrite — Guid ids, Destination prop, IReadOnlyList returns, interface alignment"
+src/HNW.Api/HNW.Api.csproj,modified,"Session 3: removed Microsoft.AspNetCore.OpenApi, added EF Core Design 9.0.0, AspNetCore.HealthChecks.MySql 9.0.0"
+src/HNW.Api/Program.cs,modified,Session 3: added JsonStringEnumConverter to controller JSON options
+src/HNW.Api/appsettings.json,modified,Session 3: added SslMode=none to connection string
+src/HNW.Api/appsettings.Development.json,modified,Session 3: socket auth connection string (/tmp/mysql.sock)
+src/HNW.Data/HNW.Data.csproj,modified,Session 3: Pomelo 9.0.0 + EF Core 9.0.0 pinned
+src/HNW.Data/Migrations/*_InitialCreate.cs,created,Session 3: EF Core InitialCreate migration (4 entity tables)
+src/HNW.Data/Migrations/ApplicationDbContextModelSnapshot.cs,created,Session 3: EF Core model snapshot
+src/HNW.WebClient/package.json,modified,Session 3: removed invalid JSON comment block
+AI/nextSteps.md,modified,Session 3: MASTER TODO updates + repo transition commands + session history
+AI/WORKLOG.md,modified,Session 3: session 3 worklog appended
+AI/CHANGES.csv,modified,Session 3: appended session 3 entries
+AI/COMMIT_INFO.txt,modified,Session 3: appended session 3 commit metadata

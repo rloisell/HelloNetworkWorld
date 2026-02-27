@@ -1,13 +1,16 @@
-// NetworkTestService.cs — HNW.Api
-// Ryan Loiselle — Developer / Architect
-// GitHub Copilot — AI pair programmer / code generation
-// February 2026
-//
-// Stub implementation of INetworkTestService.
-// All CRUD delegates to ApplicationDbContext via EF Core.
-// Implements: 003-network-test-config (WP02)
-// AI-assisted: service implementation scaffold; reviewed and directed by Ryan Loiselle.
+/*
+ * NetworkTestService.cs
+ * Ryan Loiselle — Developer / Architect
+ * GitHub Copilot — AI pair programmer / code generation
+ * February 2026
+ *
+ * Implementation of INetworkTestService — CRUD for network test definitions.
+ * All database access via ApplicationDbContext + EF Core.
+ * Implements: 003-network-test-config (WP02)
+ * AI-assisted: service implementation; reviewed and directed by Ryan Loiselle.
+ */
 
+using HNW.Api.Infrastructure;
 using HNW.Data;
 using HNW.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +19,17 @@ namespace HNW.Api.Services;
 
 public class NetworkTestService(ApplicationDbContext db) : INetworkTestService
 {
-    public async Task<IEnumerable<NetworkTestDefinitionDto>> GetAllAsync(CancellationToken ct = default)
+    // ── QUERIES ──────────────────────────────────────────────────────────────
+
+    // returns all network test definitions with their latest result, newest first
+    public async Task<IReadOnlyList<NetworkTestDefinitionDto>> GetAllAsync(CancellationToken ct = default)
     {
         var defs = await db.NetworkTestDefinitions
             .AsNoTracking()
+            .OrderByDescending(d => d.CreatedAt)
             .ToListAsync(ct);
 
-        // Attach last result per definition
+        // Attach most recent result per definition
         var ids = defs.Select(d => d.Id).ToList();
         var lastResults = await db.NetworkTestResults
             .Where(r => ids.Contains(r.NetworkTestDefinitionId))
@@ -31,14 +38,14 @@ public class NetworkTestService(ApplicationDbContext db) : INetworkTestService
             .ToListAsync(ct);
 
         var resultMap = lastResults.ToDictionary(r => r.NetworkTestDefinitionId);
-
-        return defs.Select(d => ToDto(d, resultMap.GetValueOrDefault(d.Id)));
+        return defs.Select(d => ToDto(d, resultMap.GetValueOrDefault(d.Id))).ToList();
     }
 
-    public async Task<NetworkTestDefinitionDto?> GetByIdAsync(int id, CancellationToken ct = default)
+    // returns a single definition by id; throws NotFoundException if not found
+    public async Task<NetworkTestDefinitionDto> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
-        var def = await db.NetworkTestDefinitions.FindAsync([id], ct);
-        if (def is null) return null;
+        var def = await db.NetworkTestDefinitions.FindAsync([id], ct)
+            ?? throw new NotFoundException($"NetworkTestDefinition {id} not found.");
 
         var last = await db.NetworkTestResults
             .Where(r => r.NetworkTestDefinitionId == id)
@@ -48,18 +55,19 @@ public class NetworkTestService(ApplicationDbContext db) : INetworkTestService
         return ToDto(def, last);
     }
 
+    // ── MUTATIONS ────────────────────────────────────────────────────────────
+
+    // creates a new definition; returns the created DTO
     public async Task<NetworkTestDefinitionDto> CreateAsync(CreateNetworkTestRequest request, CancellationToken ct = default)
     {
         var def = new NetworkTestDefinition
         {
             Name           = request.Name,
-            Host           = request.Host,
+            Destination    = request.Destination,
             Port           = request.Port,
             ServiceType    = request.ServiceType,
             CronExpression = request.CronExpression,
-            TimeoutMs      = request.TimeoutMs,
-            IsEnabled      = request.IsEnabled,
-            Description    = request.Description,
+            IsEnabled      = true,
             CreatedAt      = DateTimeOffset.UtcNow,
             UpdatedAt      = DateTimeOffset.UtcNow,
         };
@@ -69,110 +77,70 @@ public class NetworkTestService(ApplicationDbContext db) : INetworkTestService
         return ToDto(def, null);
     }
 
-    public async Task<NetworkTestDefinitionDto?> UpdateAsync(int id, UpdateNetworkTestRequest request, CancellationToken ct = default)
+    // updates a definition; returns updated DTO; throws NotFoundException
+    public async Task<NetworkTestDefinitionDto> UpdateAsync(
+        Guid id, UpdateNetworkTestRequest request, CancellationToken ct = default)
     {
-        var def = await db.NetworkTestDefinitions.FindAsync([id], ct);
-        if (def is null) return null;
+        var def = await db.NetworkTestDefinitions.FindAsync([id], ct)
+            ?? throw new NotFoundException($"NetworkTestDefinition {id} not found.");
 
         def.Name           = request.Name;
-        def.Host           = request.Host;
+        def.Destination    = request.Destination;
         def.Port           = request.Port;
         def.ServiceType    = request.ServiceType;
         def.CronExpression = request.CronExpression;
-        def.TimeoutMs      = request.TimeoutMs;
         def.IsEnabled      = request.IsEnabled;
-        def.Description    = request.Description;
         def.UpdatedAt      = DateTimeOffset.UtcNow;
 
         await db.SaveChangesAsync(ct);
         return ToDto(def, null);
     }
 
-    public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+    // soft-deletes a definition; throws NotFoundException
+    public async Task DeleteAsync(Guid id, CancellationToken ct = default)
     {
-        var def = await db.NetworkTestDefinitions.FindAsync([id], ct);
-        if (def is null) return false;
+        var def = await db.NetworkTestDefinitions.FindAsync([id], ct)
+            ?? throw new NotFoundException($"NetworkTestDefinition {id} not found.");
 
+        // Hard delete for now; switch to soft delete with IsDeleted flag in Phase 2
         db.NetworkTestDefinitions.Remove(def);
         await db.SaveChangesAsync(ct);
-        return true;
     }
 
-    public async Task<NetworkTestDefinitionDto?> ToggleEnabledAsync(int id, bool enabled, CancellationToken ct = default)
+    // toggles IsEnabled and returns updated DTO; throws NotFoundException
+    public async Task<NetworkTestDefinitionDto> ToggleAsync(Guid id, CancellationToken ct = default)
     {
-        var def = await db.NetworkTestDefinitions.FindAsync([id], ct);
-        if (def is null) return null;
+        var def = await db.NetworkTestDefinitions.FindAsync([id], ct)
+            ?? throw new NotFoundException($"NetworkTestDefinition {id} not found.");
 
-        def.IsEnabled = enabled;
+        def.IsEnabled = !def.IsEnabled;
         def.UpdatedAt = DateTimeOffset.UtcNow;
         await db.SaveChangesAsync(ct);
         return ToDto(def, null);
     }
 
-    public Task TriggerNowAsync(int id, CancellationToken ct = default)
-    {
-        // TODO: Implement: 004-network-test-execution — enqueue immediate Quartz job
-        return Task.CompletedTask;
-    }
+    // ── MAPPING HELPERS ──────────────────────────────────────────────────────
 
-    public async Task<TestResultSummaryDto?> GetResultSummaryAsync(int id, CancellationToken ct = default)
-    {
-        var def = await db.NetworkTestDefinitions.FindAsync([id], ct);
-        if (def is null) return null;
-
-        var results = await db.NetworkTestResults
-            .Where(r => r.NetworkTestDefinitionId == id)
-            .OrderByDescending(r => r.ExecutedAt)
-            .Take(100)
-            .ToListAsync(ct);
-
-        return new TestResultSummaryDto(
-            DefinitionId: id,
-            Total:        results.Count,
-            Passed:       results.Count(r => r.Passed),
-            Failed:       results.Count(r => !r.Passed),
-            AvgLatencyMs: results.Any() ? (double?)results.Average(r => r.LatencyMs ?? 0) : null,
-            Results:      results.Select(ToResultDto).ToList()
-        );
-    }
-
-    public async Task<IEnumerable<NetworkTestResultDto>> GetResultsAsync(int id, int limit = 50, CancellationToken ct = default)
-    {
-        var results = await db.NetworkTestResults
-            .Where(r => r.NetworkTestDefinitionId == id)
-            .OrderByDescending(r => r.ExecutedAt)
-            .Take(limit)
-            .ToListAsync(ct);
-
-        return results.Select(ToResultDto);
-    }
-
-    // ── Mapping helpers ──────────────────────────────────────────────────────
-
+    // maps entity + optional last result to DTO
     private static NetworkTestDefinitionDto ToDto(NetworkTestDefinition d, NetworkTestResult? last) =>
         new(
             Id:             d.Id,
             Name:           d.Name,
-            Host:           d.Host,
+            Destination:    d.Destination,
             Port:           d.Port,
             ServiceType:    d.ServiceType.ToString(),
             CronExpression: d.CronExpression,
-            TimeoutMs:      d.TimeoutMs,
             IsEnabled:      d.IsEnabled,
-            Description:    d.Description,
             PolicyStatus:   d.PolicyStatus.ToString(),
             PolicyPrUrl:    d.PolicyPrUrl,
             CreatedAt:      d.CreatedAt,
             UpdatedAt:      d.UpdatedAt,
-            LastResult:     last is null ? null : ToResultDto(last)
+            LatestResult:   last is null ? null : new NetworkTestResultSummaryDto(
+                IsSuccess:    last.IsSuccess,
+                LatencyMs:    last.LatencyMs,
+                ErrorMessage: last.ErrorMessage,
+                ExecutedAt:   last.ExecutedAt
+            )
         );
 
-    private static NetworkTestResultDto ToResultDto(NetworkTestResult r) =>
-        new(
-            Id:           r.Id,
-            Passed:       r.Passed,
-            LatencyMs:    r.LatencyMs,
-            ErrorMessage: r.ErrorMessage,
-            ExecutedAt:   r.ExecutedAt
-        );
-}
+} // end NetworkTestService

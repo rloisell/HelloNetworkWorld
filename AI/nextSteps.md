@@ -14,15 +14,15 @@
 
 | Status | # | Item | Effort | Notes / Depends On | Branch |
 |--------|---|------|--------|--------------------|--------|
-| ✅ | **1** | Initialize git repo + push to rloisell/HelloNetworkWorld | Small | Created under rloisell (bcgov-c repo creation requires admin). Transfer later. | `main` |
+| ✅ | **1** | Initialize git repo + push to rloisell/HelloNetworkWorld | Small | Created under rloisell (bcgov-c repo creation requires admin). Transfer commands documented. | `main` |
 | ⬜ | **2** | Run `spec-kitty init` and validate all 7 feature specs | Small | Depends on #1 | `docs/spec-kitty-init` |
-| ⬜ | **3** | Create `HNW.sln` + project scaffolds (Api, Data, WebClient) | Medium | Depends on #2 | `feat/001-project-scaffold` |
+| ✅ | **3** | Create `HNW.sln` + project scaffolds (Api, Data, WebClient) | Medium | Builds clean, local dev deployed | `main` |
 
 ### Tier 2 — High Priority (Sprint 1)
 
 | Status | # | Item | Effort | Notes / Depends On | Branch |
 |--------|---|------|--------|--------------------|--------|
-| ⬜ | **4** | Implement 001-project-scaffold (API health, DB migrations, React shell) | Large | Depends on #3 | `feat/001-project-scaffold` |
+| ✅ | **4** | Implement 001-project-scaffold (API health, DB migrations, React shell) | Large | API on 5200, Vite on 5175, MariaDB hnw_dev, CRUD verified | `main` |
 | ✅ | **5** | Add hnw-app Helm chart to tenant-gitops-be808f | Medium | PR #7 opened | `feat/hnw-gitops` |
 | ⬜ | **6** | GitHub Actions — build-and-push to Artifactory (hnw-api, hnw-frontend) | Medium | Depends on #5 | `feat/001-project-scaffold` |
 | ⬜ | **7** | Implement 002-documentation-hub (standards reference pages) | Medium | Depends on #4 | `feat/002-documentation-hub` |
@@ -64,6 +64,50 @@
 8. **Session 8** — OIDC auth (006)
 9. **Session 9** — Network policy automation (007)
 10. **Session 10** — AI agents (008) + template update
+
+---
+
+## Repo Transition: rloisell → bcgov-c
+
+> The repo currently lives at `rloisell/HelloNetworkWorld` because `bcgov-c` org restricts
+> repo creation to admins. Once a `bcgov-c` admin creates the repo or transfers ownership:
+
+### Option A — GitHub Transfer (preferred, preserves history + issues + settings)
+
+Ask a bcgov-c org admin to:
+
+1. Accept the transfer at `bcgov-c` org level
+2. You initiate: GitHub → `rloisell/HelloNetworkWorld` → Settings → Danger Zone → Transfer ownership → New owner: `bcgov-c`
+
+Then update your local remote:
+
+```bash
+cd /Users/rloisell/Documents/developer/HelloNetworkWorld
+git remote set-url origin https://github.com/bcgov-c/HelloNetworkWorld.git
+git fetch origin
+git branch --set-upstream-to=origin/main main
+```
+
+### Option B — Fresh repo (if transfer is not possible)
+
+Ask admin to create `bcgov-c/HelloNetworkWorld`, then:
+
+```bash
+cd /Users/rloisell/Documents/developer/HelloNetworkWorld
+git remote rename origin old-origin
+git remote add origin https://github.com/bcgov-c/HelloNetworkWorld.git
+git push -u origin main
+# After confirming everything is in bcgov-c:
+git remote remove old-origin
+```
+
+### Post-Transfer Checklist
+
+- [ ] Update GitOps ArgoCD Application CRDs to point `repoURL` at `bcgov-c/HelloNetworkWorld`
+- [ ] Update `.github/workflows/` image tags if they reference `rloisell`
+- [ ] Update `AI/COMMIT_INFO.txt` with new remote URL
+- [ ] Set branch protection rules on `main` (require PR review, status checks)
+- [ ] Add `bcgov-c/platform-team` as collaborators
 
 ---
 
@@ -126,6 +170,28 @@
 ## Session History
 
 > Newest entry first.
+
+### 2026-02-27 — Session 3: Local dev deployment (DSC-modernization pattern)
+
+**Commits:** (pending push this session)
+**Key work:**
+- Fixed 8 build errors in NetworkTestService.cs (property name mismatches, int→Guid, IEnumerable→IReadOnlyList, missing interface methods)
+- Removed conflicting `Microsoft.AspNetCore.OpenApi` 10.x package (clashed with Swashbuckle 6.x `Microsoft.OpenApi` 1.x)
+- Added `Microsoft.EntityFrameworkCore.Design` 9.0.0 for migration tooling
+- Added `JsonStringEnumConverter` to API JSON serializer options
+- Removed invalid JSON comment block from `package.json`
+- Created `hnw_dev` database on local MariaDB 10.11.16
+- Created and applied `InitialCreate` EF Core migration (4 tables + __EFMigrationsHistory)
+- Verified full CRUD flow: POST → GET → GET by ID → PATCH toggle → DELETE (all 2xx)
+- `npm install` — 225 packages, 0 vulnerabilities
+- Vite dev server on 5175 with API proxy to 5200 — verified HTML + proxy
+- Connection: socket auth (`/tmp/mysql.sock`, `rloisell`, no password, SslMode=none)
+- Port allocation: API 5200, Vite 5175 (no collision with DSC on 5115/5173)
+
+**Key decisions:**
+- Swashbuckle 6.x preferred over built-in .NET 10 `Microsoft.AspNetCore.OpenApi` (Swagger UI out-of-box)
+- Socket auth for local dev matches DSC-modernization pattern (no passwords in config)
+- Hard delete for now in `NetworkTestService.DeleteAsync`; soft delete planned for Phase 2
 
 ### 2026-02-27 — Session 2: Git init, push, and GitOps PR
 
