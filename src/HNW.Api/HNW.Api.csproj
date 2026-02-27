@@ -30,7 +30,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.*" />
 
     <!-- Auth (Phase 2 — uncomment when implementing feature 006) -->
     <!-- <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.*" /> -->
