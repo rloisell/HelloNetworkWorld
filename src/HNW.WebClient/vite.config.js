@@ -31,5 +31,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    // esnext required — main.jsx uses top-level await to load /config.json
+    // at runtime before React mounts (runtime config pattern for multi-env images)
+    target: 'esnext',
   },
 });
