@@ -15,7 +15,7 @@ on:
     paths:
       - "src/**"
       - "*.sln"
-      - ".github/workflows/build-and-test.yml"
+      - ".github/**"
 
 jobs:
 
