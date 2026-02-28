@@ -1,0 +1,35 @@
+# Dependency Review
+# Author: Ryan Loiselle | Template: rl-project-template | Date: 2026-02-28
+#
+# Blocks a PR if it introduces a new dependency with a CRITICAL or HIGH CVE.
+# Uses the OSSF dependency-review-action — no secrets required.
+# Runs on: pull_request targeting main or develop
+
+name: Dependency Review
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          # Deny CRITICAL and HIGH severity CVEs introduced by the PR diff.
+          # comment-summary-in-pr creates a PR comment with the diff summary.
+          comment-summary-in-pr: always
+          # deny-licenses: GPL-3.0  # uncomment to also block specific SPDX licenses
