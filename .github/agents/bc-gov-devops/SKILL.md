@@ -42,6 +42,88 @@ Drives deployment onto the BC Government Emerald OpenShift platform.
 
 ---
 
+## ag-helm Helm Library Chart (BC Gov AG standard)
+
+`ag-helm-templates` is the shared Helm library used across BC Gov AG ministry projects.
+Consume it via OCI in your chart's `Chart.yaml`:
+
+```yaml
+# gitops-repo/charts/<app>/Chart.yaml
+dependencies:
+  - name: ag-helm-templates
+    version: "<released-version>"
+    repository: "oci://ghcr.io/bcgov-c/helm"
+```
+
+If the registry requires auth:
+```bash
+echo $GITHUB_TOKEN | helm registry login ghcr.io -u <github-user> --password-stdin
+helm dependency update ./charts/<app>
+```
+
+**Templates provided by ag-helm:**
+
+| Template | Description |
+|----------|-------------|
+| `ag-template.deployment` | Deployment with OpenShift SCC awareness |
+| `ag-template.statefulset` | StatefulSet |
+| `ag-template.job` | Job with TTL |
+| `ag-template.service` | Service |
+| `ag-template.serviceaccount` | ServiceAccount |
+| `ag-template.route.openshift` | OpenShift Route with AVI annotation enforcement |
+| `ag-template.networkpolicy` | Intent-based NetworkPolicy (recommended) |
+| `ag-template.hpa` | HPA (autoscaling/v2) |
+| `ag-template.pdb` | PodDisruptionBudget |
+| `ag-template.pvc` | PersistentVolumeClaim |
+
+**Required `values.yaml` root keys when using ag-helm:**
+```yaml
+global:
+  openshift: true    # enables OpenShift SCC mode — do NOT omit on Emerald
+
+project: <app-name>  # becomes ApplicationGroup label prefix
+registry: artifacts.developer.gov.bc.ca
+```
+
+**`global.openshift: true` behaviour:**
+- Default container `securityContext` does **not** pin `runAsUser`/`runAsGroup` — OpenShift SCC assigns runtime UID/GID
+- Adds `checkov.io/skip999: CKV_K8S_40=OpenShift SCC assigns runtime UID/GID` annotation to suppress Checkov false-positive
+- Still enforces: `runAsNonRoot: true`, `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, `capabilities.drop: [ALL]`
+
+> When NOT using the ag-helm library (raw YAML Helm charts), manually include
+> `global.openshift: true` in `values.yaml` and omit `runAsUser`/`runAsGroup` from
+> your pod `securityContext` — OpenShift SCC handles them.
+
+---
+
+## Policy-as-Code Gate
+
+Before deploying to any environment, validate rendered Helm output against policy tools.
+
+```bash
+# 1. Render Helm to a single YAML file
+helm template myapp ./charts/<app> --values ./deploy/dev_values.yaml --debug > rendered.yaml
+
+# 2. Run policy checks
+datree test rendered.yaml --policy-config cd/policies/datree-policies.yaml
+polaris audit --config cd/policies/polaris.yaml --format pretty rendered.yaml
+kube-linter lint rendered.yaml --config cd/policies/kube-linter.yaml
+conftest test rendered.yaml --policy cd/policies --all-namespaces --fail-on-warn
+```
+
+Policy check sources (bcgov/ag-devops):
+- Rego rules: `cd/policies/network-policies.rego` — denies accidental allow-all NetworkPolicy shapes
+- Datree config: `cd/policies/datree-policies.yaml`
+- Polaris config: `cd/policies/polaris.yaml`
+- kube-linter config: `cd/policies/kube-linter.yaml`
+
+Key Rego denials (from `cd/policies/network-policies.rego`):
+- Egress rules without `to` (would allow all destinations)
+- Egress rules without `ports` (would allow all ports)
+- Wildcard peers inside `from/to` (empty objects or `podSelector: {}`)
+
+---
+
 ## Helm Chart Requirements
 
 Every service needs a Helm chart in `charts/<service>/`.
@@ -252,3 +334,8 @@ spec:
 - 2026-02-27: ArgoCD auto-sync prune=true removes orphaned resources when Helm chart is updated — confirm before enabling in prod.
 - 2026-02-27: OpenShift Routes require `haproxy.router.openshift.io/timeout` annotation if API calls can exceed 30s default.
 - 2026-02-27: ServiceAccount needs `anyuid` SCC waiver if running as non-root UID not in OpenShift's allowed range — prefer `nonroot-v2` SCC to `anyuid`.
+- 2026-02-28: `global.openshift: true` must be set in Helm values for Emerald — prevents SC UID/GID mismatch with SCC and suppresses false Checkov CKV_K8S_40 warnings.
+- 2026-02-28: ag-helm library chart OCI path is `oci://ghcr.io/bcgov-c/helm` (bcgov-c org, not bcgov). Auth via `helm registry login ghcr.io`.
+- 2026-02-28: Router NetworkPolicy label should be `ingresscontroller.operator.openshift.io/deployment-ingresscontroller: default` for specificity — broader `network.openshift.io/policy-group: ingress` may also work but confirm with cluster operator.
+- 2026-02-28: `dataclass-public` is the correct AVI annotation value for internet-facing Routes (public VIP). Only medium/high/public have registered VIPs on Emerald.
+- 2026-02-28: Prod image references should use SHA digest (`image.digest: sha256:...`) rather than mutable tags to ensure pinned deployments.

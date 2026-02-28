@@ -31,8 +31,9 @@ Controls which VIP pool handles the Route. **Get this wrong and traffic silently
 
 | Annotation value | VIP | When to use |
 |-----------------|-----|-------------|
-| `dataclass-medium` | Private VIP (`10.99.10.8`) — VPN only | ✅ All internal workloads (default) |
-| `dataclass-public` | Public internet VIP | Internet-facing routes only |
+| `dataclass-medium` | Private VIP — VPN only | ✅ All internal workloads (default) |
+| `dataclass-high` | Private VIP — sensitive data | Higher-trust internal workloads |
+| `dataclass-public` | Public internet VIP | Internet-facing routes with public exposure |
 | `dataclass-low` | ⚠️ NO VIP on Emerald | **NEVER USE** — DNS resolves but `ERR_EMPTY_RESPONSE` |
 
 ```yaml
@@ -82,6 +83,25 @@ Emerald default-denies **both Ingress AND Egress**. Every traffic flow needs two
 TCP connect timeout at startup.
 
 See `bc-gov-devops/references/networkpolicy-patterns.md` for full YAML examples.
+
+---
+
+## OpenShift Mode in Helm (`global.openshift: true`)
+
+Set this in every Helm chart's `values.yaml` targeting Emerald:
+
+```yaml
+global:
+  openshift: true
+```
+
+Effect:
+- Deployment/Job pod `securityContext` does **not** pin `runAsUser`/`runAsGroup` — OpenShift SCC assigns runtime UID/GID
+- Adds `checkov.io/skip999: CKV_K8S_40=...` annotation to suppress Checkov false-positive
+- Still enforces `runAsNonRoot`, `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, capabilities drop ALL
+
+> ⚠️ Omitting `global.openshift: true` when using the ag-helm library chart causes the
+> deployment template to pin `runAsUser: 10001` which may conflict with the namespace's SCC.
 
 ---
 

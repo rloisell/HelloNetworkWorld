@@ -202,6 +202,66 @@ then review library versions.
 
 ---
 
+## Policy-as-Code Gate
+
+Run the policy gate **after `helm template` renders successfully** and **before any deploy step**.
+Source of truth: [bcgov/ag-devops `cd/policies/`](https://github.com/bcgov/ag-devops/tree/main/cd/policies/).
+
+### Chart.yaml — OCI dependency for ag-helm (AG ministry projects)
+
+```yaml
+# charts/<app>/Chart.yaml
+dependencies:
+  - name: ag-helm-templates
+    version: "<released-version>"
+    repository: "oci://ghcr.io/bcgov-c/helm"
+```
+
+Pre-step in CI (or developer workstation):
+```bash
+echo $GITHUB_TOKEN | helm registry login ghcr.io -u <github-user> --password-stdin
+helm dependency update ./charts/<app>
+```
+
+### Policy validation step (GitHub Actions)
+
+```yaml
+      - name: Render Helm templates
+        run: |
+          helm dependency update ./charts/${{ env.APP_NAME }}
+          helm template ${{ env.APP_NAME }} ./charts/${{ env.APP_NAME }} \
+            --values ./deploy/${{ env.ENVIRONMENT }}_values.yaml \
+            --debug > rendered.yaml
+
+      - name: Policy-as-code gate
+        run: |
+          datree test rendered.yaml \
+            --policy-config cd/policies/datree-policies.yaml
+          polaris audit \
+            --config cd/policies/polaris.yaml \
+            --format pretty rendered.yaml
+          kube-linter lint rendered.yaml \
+            --config cd/policies/kube-linter.yaml
+          conftest test rendered.yaml \
+            --policy cd/policies \
+            --all-namespaces \
+            --fail-on-warn
+```
+
+| Tool | What it checks | Failure action |
+|------|---------------|----------------|
+| Datree | Kubernetes best practices schema | Block deploy |
+| Polaris | Security/reliability checks (CPU/memory limits, probes) | Block deploy |
+| kube-linter | Image latest tag, missing labels, privilege escalation | Block deploy |
+| conftest / OPA | Rego rules (no allow-all NetworkPolicy shapes, etc.) | Block deploy |
+
+Key Rego rules (from `cd/policies/network-policies.rego`):
+- Deny egress rules missing `to:` (allow-all destination)
+- Deny egress rules missing `ports:` (allow-all ports)
+- Deny wildcard `from`/`to` peers with empty `podSelector: {}`
+
+---
+
 ## Failure Patterns
 
 | Symptom | Cause | Fix |
@@ -222,3 +282,6 @@ then review library versions.
 
 - 2026-02-27: [HelloNetworkWorld] Paths filter fix — workflow was targeting wrong directory. `grep -r "paths:" .github/workflows/` revealed mismatch. Removing or fixing paths filter resolved silent non-trigger.
 - 2026-02-27: [HelloNetworkWorld] Status checks must use exact job ID strings — copy from workflow YAML, not display names.
+- 2026-02-28: ag-helm OCI chart at `oci://ghcr.io/bcgov-c/helm` requires `helm registry login ghcr.io` before `helm dependency update` — add as a step before template render.
+- 2026-02-28: Policy-as-code gate must run on the output of `helm template`; conftest requires `--all-namespaces --fail-on-warn`; kube-linter config path is `cd/policies/kube-linter.yaml` (source: bcgov/ag-devops).
+- 2026-02-28: Prod image reference should prefer `image.digest: sha256:...` over mutable tag — use `docker inspect --format='{{index .RepoDigests 0}}' <image>:<tag>` to obtain digest after build.
