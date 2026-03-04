@@ -1,9 +1,9 @@
 ---
 name: agent-evolution
-description: Self-learning agent that monitors development sessions and evolves the agent skill library — appends new discoveries to *_KNOWLEDGE sections, identifies candidate shared skills from recurring patterns, flags oversized agents needing references/ splits, and records all updates in the evolution log. Use at session end to update skill knowledge bases and grow the team's shared intelligence.
+description: Self-learning agent that monitors development sessions and evolves the agent skill library — surfaces past relevant knowledge before sessions begin (pre-session retrieval), appends causal discoveries to *_KNOWLEDGE sections, identifies candidate shared skills from recurring patterns across sessions, flags oversized agents needing references/ splits, and records all updates in the evolution log. Use at session start for retrieval and at session end to grow the team's shared intelligence.
 metadata:
   author: Ryan Loiselle
-  version: "1.0"
+  version: "1.1"
 allowed-tools:
   - read_file
   - replace_string_in_file
@@ -42,6 +42,26 @@ The evolution log is at
 
 ## Session Activation Protocol
 
+### Step 0 — Surface relevant past knowledge (pre-session)
+
+Before any implementation work begins, retrieve KNOWLEDGE entries relevant to the current session topic.
+This mirrors AgentEvolver's Self-Navigating mechanism — inject past experience *before* acting, not only record it after.
+
+```bash
+# Extract a keyword from the branch name or feature topic
+TOPIC="<branch-name-or-feature-keyword>"
+
+# Find SKILL.md files whose KNOWLEDGE sections mention the topic
+grep -ril "$TOPIC" .github/agents/ --include="SKILL.md"
+
+# Print matching KNOWLEDGE entries from those files
+grep -h "^- " .github/agents/*/SKILL.md | grep -i "$TOPIC"
+```
+
+Surface any matches as context before proceeding. If no matches are found, proceed directly to Step 1.
+
+---
+
 ### Step 1 — Read session files
 
 ```bash
@@ -67,19 +87,39 @@ grep -r "<keyword>" .github/agents/
 
 ### Step 3 — Append to KNOWLEDGE sections
 
-At the bottom of each relevant SKILL.md, append to the `*_KNOWLEDGE` block:
+At the bottom of each relevant SKILL.md, append to the `*_KNOWLEDGE` block.
 
+**Standard format** (discoveries, patterns):
 ```markdown
-- YYYY-MM-DD: [ProjectName] <what was discovered / what changed / what failed and how fixed>
+- YYYY-MM-DD: [ProjectName] <imperative statement of what was learned>
 ```
 
-Maximum 3 bullet points per session per agent. Keep entries concise (< 120 chars).
+**Causal format** (failures, debugging sessions — preferred for high-signal entries):
+```markdown
+- YYYY-MM-DD: [ProjectName] <what happened> — CAUSE: <root cause> — FIX: <resolution>
+```
+
+Include `CAUSE:` / `FIX:` whenever a fix required diagnosis — this attributes the causal step, not just the outcome, making the entry actionable for future sessions.
+
+Maximum 3 bullet points per session per agent. Keep entries concise (< 150 chars total).
 
 ### Step 4 — Check for shared skill candidates
 
 Signal to extract to a shared skill when:
 - Same pattern written into 2+ separate SKILL.md files this session, OR
-- A KNOWLEDGE entry is already present in 2+ agents for the same topic
+- A KNOWLEDGE entry is already present in 2+ agents for the same topic, OR
+- A topic keyword appears in 3+ past session entries in `evolution-log.md` without a dedicated shared skill
+
+```bash
+# Scan evolution log for recurring topics not yet promoted to a shared skill
+# Replace <keyword> with the pattern in question
+grep -c "<keyword>" .github/agents/agent-evolution/references/evolution-log.md
+
+# List all existing shared skills for reference
+ls .github/agents/
+```
+
+If a cross-session pattern is found (3+ log entries, no shared skill), treat it as a promotion candidate even if it did not re-appear this session.
 
 Create the shared skill directory and SKILL.md, then replace the inline content
 with a reference link.
@@ -166,3 +206,4 @@ Project codes: `HNW`, `DSC`, `DSCM`, `TEMPLATE`, or feature branch name.
 > Format: `YYYY-MM-DD: <discovery>`
 
 - 2026-02-27: [TEMPLATE] Initial agent team migrated from flat .agent.md format to Agent Skills SKILL.md directory format. 4 shared skills extracted: ai-session-files, git-conventions, bc-gov-emerald, containerfile-standards.
+- 2026-03-04: [TEMPLATE] Added AgentEvolver-inspired improvements: pre-session knowledge retrieval (Step 0), causal CAUSE/FIX annotation format, and cross-session pattern scanning in Step 4.
