@@ -91,7 +91,7 @@ gh run view <run-id> --log-failed 2>&1 | tail -50
 | Status check required but not found | Job `name:` ≠ ruleset context | Match `name:` in workflow YAML to ruleset string |
 | Ruleset not enforcing | Private repo on free plan | Make repo public: `gh repo edit --visibility public` |
 
-See `.github/agents/github-workflow.agent.md` for the full reference.
+See `.github/agents/github-workflow/SKILL.md` for the full reference.
 
 ---
 
