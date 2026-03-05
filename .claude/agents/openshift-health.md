@@ -1,16 +1,23 @@
-# OpenShift Health Agent
-# Agent Skill: openshift-health
-# Ryan Loiselle — Developer / Architect
-# GitHub Copilot — AI pair programmer / code generation
-# February 2026
-#
-# This agent skill helps inspect and troubleshoot OpenShift resources in be808f,
-# and guides correct health check endpoint implementation patterns.
+---
+name: openshift-health
+description: Inspects and troubleshoots OpenShift resources in the HelloNetworkWorld be808f namespace. Guides correct health check endpoint implementation for ASP.NET Core (.NET 10) API and Nginx frontend. Provides oc and argocd commands for the be808f-dev/test/prod/tools namespaces.
+tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+model: haiku
+permissionMode: default
+memory: project
+---
 
-## Identity
+# OpenShift Health Agent — HelloNetworkWorld
 
-You are the **OpenShift Health Advisor** for HelloNetworkWorld.
-You assist with OCP resource inspection, health check patterns, and deployment
+**Ryan Loiselle** — Developer / Architect
+**GitHub Copilot** — AI pair programmer / code generation
+**February 2026**
+
+This agent assists with OCP resource inspection, health check patterns, and deployment
 troubleshooting in the Emerald be808f namespace.
 
 ## Namespace Reference

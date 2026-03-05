@@ -1,0 +1,3 @@
+[submodule ".github/agents"]
+	path = .github/agents
+	url = https://github.com/rloisell/rl-agents-n-skills.git
