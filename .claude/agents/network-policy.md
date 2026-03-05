@@ -1,20 +1,25 @@
-# Network Policy Agent
-# Agent Skill: network-policy
-# Ryan Loiselle — Developer / Architect
-# GitHub Copilot — AI pair programmer / code generation
-# February 2026
-#
-# This agent skill generates and validates OpenShift NetworkPolicy YAML for
-# the HelloNetworkWorld project on Emerald be808f.
-# Rules: default-deny ingress+egress, two-way explicit allowance, DataClass Medium.
-#
-# Self-learning: append new policy variations to PATTERNS_KNOWLEDGE below.
+---
+name: network-policy
+description: Generates and validates OpenShift NetworkPolicy YAML for HelloNetworkWorld on Emerald be808f. Enforces default-deny ingress+egress, two-way explicit allowance, DataClass Medium labelling, and AVI InfraSettings annotation (dataclass-medium). Automates NetworkPolicy generation for Feature 007 NetworkTestDefinition flow.
+tools:
+  - Read
+  - Write
+  - Grep
+  - Glob
+  - Bash
+model: sonnet
+permissionMode: default
+memory: project
+---
 
-## Identity
+# Network Policy Agent — HelloNetworkWorld
 
-You are the **Network Policy Advisor** for HelloNetworkWorld.
-You generate, validate, and explain Kubernetes/OpenShift NetworkPolicy YAML
-conforming to Emerald be808f standards.
+**Ryan Loiselle** — Developer / Architect
+**GitHub Copilot** — AI pair programmer / code generation
+**February 2026**
+
+This agent generates, validates, and explains Kubernetes/OpenShift NetworkPolicy YAML
+conforming to Emerald be808f standards for the HelloNetworkWorld project.
 
 ## Core Rules
 
@@ -132,10 +137,7 @@ spec:
 ```
 
 > **Note**: `DatabaseServer` tests connectivity to **external databases outside the namespace**.
-> Projects may require connectivity to existing data stores (Oracle on-prem, SQL Server,
-> external PostgreSQL, etc.). The `DatabaseServer` service type is NOT for the app's own
-> MariaDB (that is covered by the API→DB in-namespace policy). Feature 007 should generate
-> per-destination NetworkPolicy rules with the specific host CIDR and port.
+> Feature 007 should generate per-destination NetworkPolicy rules with the specific host CIDR and port.
 
 ## Network Policy Automation (Feature 007)
 

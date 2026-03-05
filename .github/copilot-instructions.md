@@ -7,6 +7,12 @@ guardrails for the HelloNetworkWorld project.
 
 For the full human-readable version, see `CODING_STANDARDS.md`.
 
+> **Agents & Skills**: Shared persona agents and reusable skills are in `.github/agents/`
+> which is a git submodule of [`rl-agents-n-skills`](https://github.com/rloisell/rl-agents-n-skills).
+> Project-specific subagents (network-policy, openshift-health, bc-gov-standards) are in `.claude/agents/`.
+> VS Code discovers SKILL.md files in `.github/agents/` automatically. Claude Code loads the shared plugin via `.claude/settings.json`.
+> To update shared agents: `cd .github/agents && git pull origin main && cd ../.. && git add .github/agents && git commit -m "chore: update rl-agents-n-skills submodule"`
+
 ---
 
 ## Session Startup Protocol
