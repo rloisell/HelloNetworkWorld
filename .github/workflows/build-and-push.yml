@@ -33,7 +33,7 @@ jobs:
       image-tag: ${{ steps.meta.outputs.tag }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # ── Image tag: short SHA ──────────────────────────────────────────────
       - name: Set image tag
@@ -79,7 +79,7 @@ jobs:
 
     steps:
       - name: Checkout tenant-gitops-be808f
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: bcgov-c/tenant-gitops-be808f
           token: ${{ secrets.GITOPS_PAT }}
