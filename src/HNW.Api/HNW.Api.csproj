@@ -45,7 +45,7 @@
     <!-- Rate limiting (built-in to ASP.NET Core 10 — no extra package needed) -->
 
     <!-- GitHub API client (feature 007) -->
-    <PackageReference Include="Octokit" Version="13.*" />
+    <PackageReference Include="Octokit" Version="14.*" />
   </ItemGroup>
 
 </Project>
