@@ -32,7 +32,7 @@ export default function App() {
             Network Tests
           </NavLink>
           <NavLink to="/docs" className={({ isActive }) => isActive ? 'hnw-nav__link hnw-nav__link--active' : 'hnw-nav__link'}>
-            Standards &amp; Docs
+            Network Docs
           </NavLink>
         </div>
       </nav>
@@ -66,7 +66,7 @@ function BCGovHeader() {
         </div>
         <div className="bcgov-header__title">
           <span>HelloNetworkWorld</span>
-          <span className="bcgov-header__subtitle">Network Health &amp; BC Gov Standards</span>
+          <span className="bcgov-header__subtitle">Network Health &amp; Connectivity Testing</span>
         </div>
       </div>
     </header>

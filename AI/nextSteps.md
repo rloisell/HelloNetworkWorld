@@ -25,7 +25,7 @@
 | ✅ | **4** | Implement 001-project-scaffold (API health, DB migrations, React shell) | Large | API on 5200, Vite on 5175, MariaDB hnw_dev, CRUD verified | `main` |
 | ✅ | **5** | Add hnw-app Helm chart to tenant-gitops-be808f | Medium | PR #7 opened | `feat/hnw-gitops` |
 | ⬜ | **6** | GitHub Actions — build-and-push to Artifactory (hnw-api, hnw-frontend) | Medium | Depends on #5 | `feat/001-project-scaffold` |
-| ⬜ | **7** | Implement 002-documentation-hub (standards reference pages) | Medium | Depends on #4 | `feat/002-documentation-hub` |
+| ⬜ | **7** | Implement 002-network-docs-hub (network reference panel — OpenShift SDN, Silver/Gold/Emerald, DataClass/zones, NetworkPolicy patterns) | Medium | Direction change Mar 2026: narrowed from broad BC Gov standards hub to network-only reference. Depends on #4 | `feat/002-documentation-hub` |
 
 ### Tier 3 — Sprint 2
 

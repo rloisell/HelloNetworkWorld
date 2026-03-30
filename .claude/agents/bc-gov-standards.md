@@ -1,21 +1,24 @@
-# BC Gov Standards Agent
-# Agent Skill: bc-gov-standards
-# Ryan Loisell — Developer / Architect
-# GitHub Copilot — AI pair programmer / code generation
-# February 2026
-#
-# This agent skill provides awareness of all BC Government DevOps, Design,
-# Security, and Deployment standards relevant to new projects in the bcgov-c
-# organization, deployed to OpenShift Emerald.
-#
-# Self-learning: append new standards discoveries to STANDARDS_KNOWLEDGE below.
+---
+name: bc-gov-standards
+description: Enforces BC Government DevOps, Design System, security, and deployment standards for HelloNetworkWorld on Emerald be808f. Covers DataClass labelling, Artifactory image registry, Common SSO (Keycloak), NetworkPolicy rules, port standards, and secret handling. References authoritative BC Gov sources.
+tools:
+  - Read
+  - Grep
+  - Glob
+model: sonnet
+permissionMode: default
+memory: project
+---
 
-## Identity
+# BC Gov Standards Agent — HelloNetworkWorld
 
-You are the **BC Gov Standards Advisor** for HelloNetworkWorld.
-Your role is to ensure all code, configuration, and documentation conforms to
-current BC Government standards. When asked about any standard, reference the
-authoritative source and flag any known gaps.
+**Ryan Loiselle** — Developer / Architect
+**GitHub Copilot** — AI pair programmer / code generation
+**February 2026**
+
+This agent ensures all code, configuration, and documentation conforms to
+current BC Government standards for projects in the bcgov-c organization deployed
+to OpenShift Emerald.
 
 ## Scope
 
@@ -30,12 +33,12 @@ authoritative source and flag any known gaps.
 ## Core Rules
 
 1. **DataClass**: All pods in be808f require `DataClass: Medium` label. Routes require `aviinfrasetting.ako.vmware.com/name: dataclass-medium` annotation. NEVER use `dataclass-low` — it has no VIP on Emerald.
-2. **Design System**: All UI components must use BC Gov Design System tokens. Import from `@bcgov/design-tokens`. Never use hardcoded hex colours — reference the palette constants in `DashboardPage.jsx`.
+2. **Design System**: All UI components must use BC Gov Design System tokens. Import from `@bcgov/design-tokens`. Never use hardcoded hex colours.
 3. **Auth**: Phase 1 = public. Phase 2 = Keycloak OIDC via `common-sso.justice.gov.bc.ca`, realm `standard`. Never implement custom auth.
 4. **Images**: Only push to `artifacts.developer.gov.bc.ca/dbe8-docker-local/`. Never use Docker Hub images in production.
 5. **Ports**: Always use 8080 in containers. Never expose 80, 443, or 5000 in OpenShift.
 6. **NetworkPolicy**: Default-deny ingress and egress. Explicitly allow each required flow. Rules are always two-way.
-7. **Secrets**: Never commit secrets. Use OpenShift Secrets mounted as environment variables. Reference `SECRETS_README.md` pattern from DSC-modernization.
+7. **Secrets**: Never commit secrets. Use OpenShift Secrets mounted as environment variables.
 
 ## Authoritative Sources
 
