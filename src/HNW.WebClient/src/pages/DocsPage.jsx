@@ -40,7 +40,7 @@ const STATIC_LINKS = {
     },
     {
       title: "BC Gov Private Cloud — Network Policies",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "Platform-specific NetworkPolicy guidance for BC Gov OpenShift namespaces.",
     },
     {
@@ -52,54 +52,54 @@ const STATIC_LINKS = {
   ClusterTiers: [
     {
       title: "BC Gov Private Cloud Clusters",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-clusters",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/",
       description: "Comparison of Silver, Gold, and Emerald cluster capabilities, SDN implementations, and networking differences.",
     },
     {
       title: "Silver Cluster Networking Notes",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-clusters#silver",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#silver",
       description: "Silver-specific networking: OpenShift SDN, HAProxy router, ingress/egress defaults.",
     },
     {
       title: "Gold Cluster Networking Notes",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-clusters#gold",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#gold",
       description: "Gold-specific networking: OVN-Kubernetes, default-deny stance, multi-zone topology.",
     },
     {
       title: "Emerald Cluster Networking Notes",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-clusters#emerald",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#emerald",
       description: "Emerald-specific networking: strict default-deny ingress AND egress, AVI load balancer, DataClass enforcement.",
     },
     {
       title: "AVI / NSX Advanced Load Balancer (Emerald)",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-clusters#avi-nsx-advanced-load-balancer",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#emerald",
       description: "AVI replaces HAProxy on Emerald. Routes must carry the correct AVI InfraSettings annotation.",
     },
   ],
   DataClassAndZones: [
     {
       title: "BC Gov DataClass Overview",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/",
       description: "How BC Government classifies data (Low / Medium / High) and what each class means for network access.",
     },
     {
       title: "Network Zone Model (Public / Private / Restricted)",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification#network-zones",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/platform-network-topology/",
       description: "The three network zones and which data classes are permitted in each.",
     },
     {
       title: "DataClass Labels on Pods and Routes",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification#labels",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#emerald",
       description: "Required pod label DataClass: Medium and how it interacts with Emerald's AVI InfraSettings.",
     },
     {
       title: "Impact of DataClass on Egress (Emerald)",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification#emerald-impact",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#emerald",
       description: "How DataClass labelling determines which egress network zones your pods can reach on Emerald.",
     },
     {
       title: "AVI InfraSettings — dataclass-medium vs dataclass-low",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/avi-infrasettings",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/#emerald",
       description: "Only dataclass-medium has a registered VIP on Emerald. Never use dataclass-low.",
     },
     {
@@ -116,17 +116,17 @@ const STATIC_LINKS = {
   NetworkPolicyPatterns: [
     {
       title: "Two-policy rule: ingress + egress",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/#two-policy-rule",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "Every network flow requires TWO policies: ingress on the receiver AND egress on the sender.",
     },
     {
       title: "DNS egress policy (UDP+TCP 53)",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/#dns",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "All pods need an explicit DNS egress policy (UDP 53 + TCP 53) on Emerald — not included by default.",
     },
     {
       title: "Allow egress to external IP / CIDR",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/#egress-cidr",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "How to write a CIDR-based egress policy to allow traffic to external systems or on-prem networks.",
     },
     {
@@ -136,19 +136,19 @@ const STATIC_LINKS = {
     },
     {
       title: "Common port reference (Oracle 1521, MSSQL 1433, PG 5432, MySQL 3306)",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/#common-ports",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "Standard database and service ports used when writing egress NetworkPolicy rules.",
     },
     {
       title: "Third Party Gateway (3PG) / ExtraNet — external partner connectivity",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "Connections to external government partners (other ministries, Crown corps, health authorities) must traverse the ExtraNet zone via a Third Party Gateway (3PG). Requires formal approval and a dedicated egress NetworkPolicy rule targeting the 3PG CIDR.",
     },
   ],
   SdnGuidance: [
     {
       title: "Default-deny ingress and egress on Emerald",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-clusters#default-deny",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/#default-policy",
       description: "Emerald enforces default-deny on BOTH ingress and egress. Every flow must be explicitly allowed.",
     },
     {
@@ -168,17 +168,17 @@ const STATIC_LINKS = {
     },
     {
       title: "SDN Security Classification — Low / Medium / High workload model",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/hosting-tiers-table/",
       description: "2022 BC Gov SDN model: Low = public info (DMZ-equivalent, internet accessible), Medium = Protected A (no direct internet), High = Protected B-C (internet blocked at guardrail). DataClass pod label must match workload classification.",
     },
     {
       title: "Medium/High workloads — internet egress via Forward Proxy only",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/#egress-cidr",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/openshift-network-policies/",
       description: "Medium security workloads cannot reach the internet directly — must use the SSBC SDN Forward Proxy (HTTP/HTTPS only). High workloads require Ministry ISO (MISO) exemption. Direct internet egress from Medium/High is denied at the SDN guardrail.",
     },
     {
       title: "Zone adjacency rule — no zone hopping",
-      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification#network-zones",
+      url: "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/platform-network-topology/",
       description: "BC Gov zone adjacency rule: communication is only permitted between adjacent zones. Traffic path: Internet → DMZ/Low → Medium → High. A session cannot be initiated directly from the internet into Medium or High zones.",
     },
   ],
