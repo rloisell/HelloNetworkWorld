@@ -10,6 +10,7 @@
  */
 
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { Header, Footer, FooterLinks } from '@bcgov/design-system-react-components';
 import DashboardPage from './pages/DashboardPage.jsx';
 import TestsPage from './pages/TestsPage.jsx';
 import DocsPage from './pages/DocsPage.jsx';
@@ -19,8 +20,11 @@ import './App.css';
 export default function App() {
   return (
     <BrowserRouter>
-      {/* BC Gov Design System header */}
-      <BCGovHeader />
+      {/* BC Gov Design System header — logo is built into the component */}
+      <Header
+        title="HelloNetworkWorld"
+        skipLinks={[<a key="main" href="#main-content">Skip to main content</a>]}
+      />
 
       {/* Navigation */}
       <nav className="hnw-nav" role="navigation" aria-label="Main navigation">
@@ -46,46 +50,21 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* BC Gov footer */}
-      <BCGovFooter />
+      {/* BC Gov Design System footer */}
+      <Footer
+        links={[
+          <FooterLinks
+            key="about"
+            title="BC Government"
+            links={[
+              { label: 'Disclaimer', href: 'https://www2.gov.bc.ca/gov/content/home/disclaimer' },
+              { label: 'Privacy', href: 'https://www2.gov.bc.ca/gov/content/home/privacy' },
+              { label: 'Accessibility', href: 'https://www2.gov.bc.ca/gov/content/home/accessibility' },
+              { label: 'Copyright', href: 'https://www2.gov.bc.ca/gov/content/home/copyright' },
+            ]}
+          />,
+        ]}
+      />
     </BrowserRouter>
   );
 } // end App
-
-// ── BC GOV HEADER ────────────────────────────────────────────────────────────
-// BC Gov standard header with logo and skip-to-content link
-function BCGovHeader() {
-  return (
-    <header className="bcgov-header">
-      <a href="#main-content" className="bcgov-skip-to-content">Skip to main content</a>
-      <div className="bcgov-header__container">
-        <div className="bcgov-header__logo">
-          <a href="https://gov.bc.ca" aria-label="Province of British Columbia">
-            <img src="/bcid-logo-rev-en.svg" alt="Province of British Columbia" width="177" height="44" />
-          </a>
-        </div>
-        <div className="bcgov-header__title">
-          <span>HelloNetworkWorld</span>
-          <span className="bcgov-header__subtitle">Network Health &amp; Connectivity Testing</span>
-        </div>
-      </div>
-    </header>
-  );
-} // end BCGovHeader
-
-// ── BC GOV FOOTER ────────────────────────────────────────────────────────────
-// BC Gov standard footer
-function BCGovFooter() {
-  return (
-    <footer className="bcgov-footer">
-      <div className="bcgov-footer__container">
-        <ul className="bcgov-footer__links">
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a></li>
-          <li><a href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a></li>
-        </ul>
-      </div>
-    </footer>
-  );
-} // end BCGovFooter
