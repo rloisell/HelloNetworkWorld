@@ -12,7 +12,8 @@
 namespace HNW.Data.Models;
 
 /// <summary>
-/// A documentation reference link displayed on the /docs page.
+/// A network reference link displayed on the /docs panel.
+/// Covers OpenShift SDN, cluster tier networking, DataClass/zones, NetworkPolicy patterns.
 /// IsEnvironmentRelative links are built dynamically from cluster context env vars.
 /// </summary>
 public class ReferenceLink
@@ -40,15 +41,14 @@ public class ReferenceLink
 // ── ENUMS ─────────────────────────────────────────────────────────────────────
 
 /// <summary>
-/// Display category for reference links in the documentation hub.
+/// Display category for network reference links in the /docs panel.
+/// Pivoted March 2026: narrowed from general BC Gov standards to network-specific content.
 /// </summary>
 public enum ReferenceLinkCategory
 {
-    Design,           // BC Gov Design System, BC Sans, UX guidelines
-    Development,      // Developer portal, GitHub orgs, Rocket.Chat
-    Security,         // Info security policy, STRA, CodeQL, Vault
-    OpenShift,        // Emerald console, ArgoCD, Artifactory, Platform Registry
-    GitOps,           // ArgoCD, Helm, GitHub Actions patterns
-    AIGuidance,       // Copilot, agent skills, rl-project-template AI docs
-    LocalEnvironment  // Dynamic links specific to this deployment (environment-relative)
+    OpenShiftNetworking,    // OpenShift SDN, OVN-Kubernetes, NetworkPolicy overview
+    ClusterTiers,           // Silver / Gold / Emerald cluster networking differences
+    DataClassAndZones,      // BC Gov DataClass labels, network zone model, Emerald AVI impact
+    NetworkPolicyPatterns,  // Two-policy rule, DNS egress, CIDR allowances, common ports
+    SdnGuidance             // Default-deny, troubleshooting, oc debug, Calico vs OVN
 }

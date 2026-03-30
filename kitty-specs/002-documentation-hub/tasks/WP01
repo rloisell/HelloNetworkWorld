@@ -1,15 +1,19 @@
-WP: Seed reference links database + controller
+WP: Seed network reference links database + controller
 Feature: 002-documentation-hub
 Estimate: 1.5h
 Dependencies: WP01 (001-project-scaffold)
 
 Tasks:
-1. Create EF Core initial migration covering all 4 entities
-2. Add ReferenceLink seed data in ApplicationDbContext.OnModelCreating for all 7 categories
-3. Implement and test GET /api/reference-links with optional ?category= filter
-4. Verify DocsPage.jsx renders seeded links grouped by category tab
+1. Update ReferenceLinkCategory enum — remove Design, Development, Security, AIGuidance;
+   add OpenShiftNetworking, ClusterTiers, DataClassAndZones, NetworkPolicyPatterns, SdnGuidance
+2. Create EF Core migration for enum change
+3. Add ReferenceLink seed data in ApplicationDbContext for all 5 network categories
+   (see spec.md Reference Links Catalogue for exact URLs)
+4. Implement and test GET /api/reference-links with optional ?category= filter
+5. Verify DocsPage.jsx renders seeded links grouped by the 5 network category tabs
 
 Acceptance:
-- AC-002-01: All 7 category tabs render with ≥ 3 links each
-- AC-002-02: Category filter query param returns correct subset
-- AC-002-03: API returns 200 with at least 20 total links (seeded data)
+- AC-002-01: All 5 network category tabs render with ≥ 3 links each
+- AC-002-02: Category filter query param returns correct subset (e.g. ?category=NetworkPolicyPatterns)
+- AC-002-03: API returns 200 with at least 20 total seeded links across all network categories
+- AC-002-04: No Design / Development / Security / AIGuidance categories appear in the API or UI

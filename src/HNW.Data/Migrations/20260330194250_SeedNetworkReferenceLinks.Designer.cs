@@ -4,6 +4,7 @@ using HNW.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HNW.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330194250_SeedNetworkReferenceLinks")]
+    partial class SeedNetworkReferenceLinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -365,30 +368,6 @@ namespace HNW.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("33333333-3333-3333-3333-333333333306"),
-                            Category = "DataClassAndZones",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Foundation policy: defines Protected A / B / C information classes. The OpenShift DataClass label (Low / Medium / High) maps directly to ISCF levels — Low = public info, Medium = Protected A / lower Protected B, High = Protected B-C.",
-                            IsActive = true,
-                            IsEnvironmentRelative = false,
-                            SortOrder = 60,
-                            Title = "BC Gov Information Security Classification Framework (ISCF)",
-                            Url = "https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/information-security/information-security-classification"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333307"),
-                            Category = "DataClassAndZones",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Traditional OCIO zone model (IMIT Standard 6.13): Zone A = Restricted High Security (Protected B-C), Zone B = High Security (Protected A-low B), Zone C = Trusted Client (managed IDIR devices), DMZ = internet-facing proxies. SDN Low/Medium/High classifications map to these zones respectively.",
-                            IsActive = true,
-                            IsEnvironmentRelative = false,
-                            SortOrder = 70,
-                            Title = "BC Gov Network Security Zone Model — Zone A / B / C / DMZ",
-                            Url = "https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/information-security"
-                        },
-                        new
-                        {
                             Id = new Guid("44444444-4444-4444-4444-444444444401"),
                             Category = "NetworkPolicyPatterns",
                             CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
@@ -449,18 +428,6 @@ namespace HNW.Data.Migrations
                         },
                         new
                         {
-                            Id = new Guid("44444444-4444-4444-4444-444444444406"),
-                            Category = "NetworkPolicyPatterns",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Connections to external government partners (other ministries, Crown corps, health authorities) must traverse the ExtraNet zone via a Third Party Gateway (3PG). Requires formal approval and a dedicated egress NetworkPolicy rule targeting the 3PG CIDR.",
-                            IsActive = true,
-                            IsEnvironmentRelative = false,
-                            SortOrder = 60,
-                            Title = "Third Party Gateway (3PG) / ExtraNet — external partner connectivity",
-                            Url = "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/"
-                        },
-                        new
-                        {
                             Id = new Guid("55555555-5555-5555-5555-555555555501"),
                             Category = "SdnGuidance",
                             CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
@@ -506,42 +473,6 @@ namespace HNW.Data.Migrations
                             SortOrder = 40,
                             Title = "oc debug — testing connectivity from a pod",
                             Url = "https://docs.openshift.com/container-platform/4.14/support/troubleshooting/troubleshooting-network-issues.html"
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555505"),
-                            Category = "SdnGuidance",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "2022 BC Gov SDN model: Low = public info (DMZ-equivalent, internet accessible), Medium = Protected A (Zone B-equivalent, no direct internet), High = Protected B-C (Zone A-equivalent, internet blocked at guardrail). DataClass pod label must match workload classification.",
-                            IsActive = true,
-                            IsEnvironmentRelative = false,
-                            SortOrder = 50,
-                            Title = "SDN Security Classification — Low / Medium / High workload model",
-                            Url = "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification"
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555506"),
-                            Category = "SdnGuidance",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "Medium security workloads cannot reach the internet directly — must use the SSBC SDN Forward Proxy (HTTP/HTTPS only). High security workloads require Ministry ISO (MISO) exemption for any internet access. Direct internet egress from Medium/High is denied at the guardrail.",
-                            IsActive = true,
-                            IsEnvironmentRelative = false,
-                            SortOrder = 60,
-                            Title = "Medium/High workloads — internet egress via Forward Proxy only",
-                            Url = "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/openshift-projects-and-access/network-policies/#egress-cidr"
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555507"),
-                            Category = "SdnGuidance",
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 3, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
-                            Description = "BC Gov zone adjacency rule: communication is only permitted between adjacent zones. Traffic path: Internet → DMZ/Low → Medium → High. A session cannot be initiated directly from the internet into Medium or High zones. NetworkPolicy cannot bypass this adjacent-zones requirement.",
-                            IsActive = true,
-                            IsEnvironmentRelative = false,
-                            SortOrder = 70,
-                            Title = "Zone adjacency rule — no zone hopping",
-                            Url = "https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/platform-architecture-reference/network-zones-and-data-classification#network-zones"
                         });
                 });
 
