@@ -57,10 +57,10 @@ export default function App() {
             key="about"
             title="BC Government"
             links={[
-              { label: 'Disclaimer', href: 'https://www2.gov.bc.ca/gov/content/home/disclaimer' },
-              { label: 'Privacy', href: 'https://www2.gov.bc.ca/gov/content/home/privacy' },
-              { label: 'Accessibility', href: 'https://www2.gov.bc.ca/gov/content/home/accessibility' },
-              { label: 'Copyright', href: 'https://www2.gov.bc.ca/gov/content/home/copyright' },
+              <a key="disclaimer"    href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>,
+              <a key="privacy"       href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>,
+              <a key="accessibility" href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>,
+              <a key="copyright"     href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>,
             ]}
           />,
         ]}
