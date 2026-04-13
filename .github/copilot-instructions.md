@@ -299,6 +299,27 @@ This project includes AI agent skill definitions in `.github/agents/`. At sessio
 3. If an agent encounters a pattern not in its knowledge base, append to its knowledge section
 4. Always operate within the scope defined in the agent file
 
+### Available shared agents (`.github/agents/agents/`)
+
+| Agent | When to use |
+|-------|-------------|
+| `security-architect` | Security reviews, OWASP, Vault, STRA/PIA |
+| `bc-gov-devops` | Helm, OpenShift, Artifactory, ArgoCD |
+| `bc-gov-iam` | OIDC PKCE, Keycloak, oidc-client-ts |
+| `session-workflow` | Session start/end, AI file updates |
+| `github-workflow` | Branches, PRs, CI diagnosis |
+| `diagram-generation` | draw.io, PlantUML, Mermaid |
+| `ci-cd-pipeline` | GitHub Actions, Trivy, yq GitOps |
+| `spec-kitty` | Spec-first WP workflow |
+| `ef-core` | EF Core, MariaDB/Pomelo, migrations |
+| `observability` | Serilog, health checks, Prometheus |
+| `local-dev` | dev-ctl multi-project manager, local troubleshooting |
+| `agent-evolution` | End-of-session knowledge updates |
+| `zero-trust-architect` | ZTA design, SASE architecture, ZTNA/CASB/SWG evaluation |
+| `network-architect` | Routing/switching design, WAN, BGP/OSPF, topology review |
+| `cisco-ios` | Cisco IOS/IOS-XE/NX-OS config, home lab, troubleshooting |
+| `sysadmin` | Solaris 9/10/11 SPARC (LDoms), RHEL, storage, boot issues |
+
 ---
 
 ## ALWAYS
