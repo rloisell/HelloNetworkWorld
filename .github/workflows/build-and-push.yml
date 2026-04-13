@@ -40,7 +40,7 @@ jobs:
         id: meta
         run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
-      # ── Login to Artifactory ──────────────────────────────────────────────
+      # ── Login to Artifactory (uses ARTIFACTORY_USERNAME / ARTIFACTORY_PASSWORD) ──
       - name: Log in to Artifactory
         uses: docker/login-action@v3
         with:
