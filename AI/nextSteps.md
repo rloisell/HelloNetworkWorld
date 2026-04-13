@@ -18,6 +18,29 @@
 | ⬜ | **2** | Run `spec-kitty init` and validate all 7 feature specs | Small | Depends on #1 | `docs/spec-kitty-init` |
 | ✅ | **3** | Create `HNW.sln` + project scaffolds (Api, Data, WebClient) | Medium | Builds clean, local dev deployed | `main` |
 
+### 🚀 NEXT SESSION — Emerald Deployment (demo Apr 14)
+
+> **Goal**: HNW running on `be808f-dev` by end of session. Ordered checklist.
+
+| # | Step | Pre-req | Owner |
+|---|------|---------|-------|
+| D1 | Merge `feat/rl-agents-submodule` → `main` via PR | Branch is push-ready | AI |
+| D2 | Confirm `ARTIFACTORY_USER` + `ARTIFACTORY_PASSWORD` secrets set on repo | Required for build-and-push | Ryan |
+| D3 | Push to `main` → triggers `build-and-push.yml` → images pushed to `dbe8-docker-local` | D1 + D2 | AI |
+| D4 | Confirm Helm chart PR #7 merged into `tenant-gitops-be808f` (feat/hnw-gitops) | PR was opened Feb 2026 | Ryan |
+| D5 | If PR #7 not merged: push chart directly or re-open | D4 | AI |
+| D6 | Create `hnw-db-secret` in `be808f-dev` (`oc create secret`) | OpenShift access | Ryan + AI |
+| D7 | ArgoCD sync `be808f-hnw-dev` app — watch rollout | D3 + D4 + D6 | AI |
+| D8 | Smoke test: hit `hnw-be808f-dev.apps.emerald.devops.gov.bc.ca` + `/health/ready` | D7 | AI |
+| D9 | Fix any pod failures (CrashLoopBackOff, ImagePullBackOff, migration errors) | D7 | AI |
+
+**Pre-session checklist for Ryan to verify before we start:**
+- [ ] `oc login` to Emerald works (`oc whoami` in be808f-dev)
+- [ ] Artifactory credentials: `artifacts.developer.gov.bc.ca` login works
+- [ ] GitHub secrets `ARTIFACTORY_USER` + `ARTIFACTORY_PASSWORD` are set on `rloisell/HelloNetworkWorld`
+- [ ] Check if tenant-gitops PR #7 was merged: `gh pr view 7 --repo bcgov-c/tenant-gitops-be808f`
+- [ ] Confirm DB credentials to use for `hnw-db-secret` (MariaDB root + hnw_user password)
+
 ### Tier 2 — High Priority (Sprint 1)
 
 | Status | # | Item | Effort | Notes / Depends On | Branch |
