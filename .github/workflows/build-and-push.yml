@@ -50,7 +50,7 @@ jobs:
 
       # ── Build & push API ──────────────────────────────────────────────────
       - name: Build API image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: containerization/Containerfile.api
@@ -61,7 +61,7 @@ jobs:
 
       # ── Build & push frontend ─────────────────────────────────────────────
       - name: Build frontend image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: containerization/Containerfile.frontend
