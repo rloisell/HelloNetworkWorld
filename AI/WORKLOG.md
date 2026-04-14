@@ -195,3 +195,39 @@ DSC-modernization's bare metal dev pattern (socket auth MariaDB, `dotnet run` + 
 - EF Core migration auto-applies on startup via `db.Database.Migrate()` in Program.cs
 - Swashbuckle 6.x provides Swagger UI at http://localhost:5200/swagger
 - Next steps: spec-kitty init (#2), documentation hub (#7), GH Actions CI (#6)
+
+---
+
+## 2026-04-13 — Session: Emerald deployment prep + local dev sync
+
+**Objective**: Fix blocking issues in GitOps PR #7, get HNW build pipeline working end-to-end,
+and restore local dev to latest design branch.
+
+### Actions taken
+- Diagnosed GitOps PR #7 failing check: Datree schema validation failure due to duplicate
+  `app.kubernetes.io/name` + `app.kubernetes.io/instance` keys when `*.labels` and
+  `*.selectorLabels` Helm helpers are merged in pod specs
+- Fixed `charts/dsc-app/templates/_helpers.tpl`: removed `name`+`instance` from `dsc-app.labels`
+- Fixed `charts/hnw-app/templates/_helpers.tpl`: removed `instance` from `hnw-app.labels`
+- Added `hnw-app` helm lint + template steps to `tenant-gitops/.github/workflows/ci.yml`
+- Added `Policy Enforcement — HNW App` Datree step to `policy-enforcement.yaml`
+- All above committed to `feat/hnw-gitops` locally at `6b0f6a5` — push blocked (rloisell
+  account only has pull access on `bcgov-c/tenant-gitops-be808f`; needs GITOPS_TOKEN PAT)
+- Fixed `build-and-push.yml` secret names: `ARTIFACTORY_USER`→`ARTIFACTORY_USERNAME`,
+  `GITOPS_PAT`→`GITOPS_TOKEN` — merged to HNW `main` via PR #25
+- Diagnosed build run `24372243382` failed: `Username and password required` — secrets
+  not yet set on `rloisell/HelloNetworkWorld`
+- Restored local dev to `feat/rl-agents-submodule` (BC Gov Design System header/footer,
+  updated DocsPage) after discovering it was serving stale `main` code
+- Updated `AI/nextSteps.md` with accurate D-steps reflecting Apr 13 progress
+- Added Local Dev State Check to `copilot-instructions.md` Session Startup Protocol
+
+### Blockers (Ryan action required)
+- Set `ARTIFACTORY_USERNAME`, `ARTIFACTORY_PASSWORD`, `GITOPS_TOKEN` secrets on
+  `rloisell/HelloNetworkWorld`, then rerun build `24372243382`
+- Push `feat/hnw-gitops` commit `6b0f6a5` using GITOPS_TOKEN PAT with write access
+
+### Outcome
+- Local dev running correctly on `feat/rl-agents-submodule` (port 5175/5200)
+- All code changes for GitOps unblock committed and ready to push
+- Build pipeline plumbing complete — awaiting secrets + GitOps push to finish deploy

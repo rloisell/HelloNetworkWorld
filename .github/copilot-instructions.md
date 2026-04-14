@@ -29,6 +29,31 @@ For the full human-readable version, see `CODING_STANDARDS.md`.
 After reading, open with a one-sentence summary of the current state from `AI/nextSteps.md`,
 then proceed with the user's request.
 
+### Local Dev State Check
+
+**Always verify local dev is running the intended branch before touching source code.**
+
+```bash
+# What branch is checked out?
+git branch --show-current
+
+# Are the dev servers running, and on which code?
+lsof -iTCP:5175 -sTCP:LISTEN -n 2>/dev/null  # Vite frontend
+lsof -iTCP:5200 -sTCP:LISTEN -n 2>/dev/null  # .NET API
+
+# Is the running code from main, or an open feature branch?
+git log --oneline -3
+```
+
+If local dev is running but the checked-out branch differs from the branch being worked on,
+kill both servers, switch to the correct branch, and restart before making or testing changes:
+```bash
+pkill -f "vite"; pkill -f "HNW.Api"
+git checkout <correct-branch>
+# restart: cd src/HNW.Api && dotnet run --launch-profile HNW.Api > /tmp/hnw-api.log 2>&1 &
+# restart: cd src/HNW.WebClient && npm run dev &> /tmp/hnw-frontend.log &
+```
+
 ### Dependabot PR Check
 
 At the start of each session, check for open Dependabot PRs:

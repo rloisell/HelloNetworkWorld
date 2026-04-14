@@ -18,28 +18,52 @@
 | ⬜ | **2** | Run `spec-kitty init` and validate all 7 feature specs | Small | Depends on #1 | `docs/spec-kitty-init` |
 | ✅ | **3** | Create `HNW.sln` + project scaffolds (Api, Data, WebClient) | Medium | Builds clean, local dev deployed | `main` |
 
-### 🚀 NEXT SESSION — Emerald Deployment (demo Apr 14)
+### 🚀 NEXT SESSION — Emerald Deployment (demo Apr 14) — UPDATED Apr 13
 
-> **Goal**: HNW running on `be808f-dev` by end of session. Ordered checklist.
+> **Goal**: HNW running on `be808f-dev`. Two blockers need Ryan action BEFORE session starts.
+
+#### ✅ Completed Apr 13
+- `build-and-push.yml` secret names fixed (`ARTIFACTORY_USER`→`USERNAME`, `GITOPS_PAT`→`TOKEN`) — merged to `main` via PR #25
+- `dsc-app` + `hnw-app` `_helpers.tpl` duplicate label keys fixed (committed locally to `feat/hnw-gitops` at `6b0f6a5`)
+- `ci.yml` + `policy-enforcement.yaml` updated with hnw-app steps (same commit)
+- Local dev running on `feat/rl-agents-submodule` (BC Gov Design System header/footer, updated DocsPage)
+
+#### 🔴 Ryan must do BEFORE session (two actions)
+
+**Action 1 — Set 3 GitHub secrets on `rloisell/HelloNetworkWorld`** (same values as DSC-mod):
+```bash
+gh secret set ARTIFACTORY_USERNAME --repo rloisell/HelloNetworkWorld
+gh secret set ARTIFACTORY_PASSWORD --repo rloisell/HelloNetworkWorld
+gh secret set GITOPS_TOKEN --repo rloisell/HelloNetworkWorld
+```
+Then rerun the failed build: `gh run rerun 24372243382 --repo rloisell/HelloNetworkWorld`
+
+**Action 2 — Push GitOps commit to `bcgov-c/tenant-gitops-be808f`** using GITOPS_TOKEN PAT:
+```bash
+cd /Users/rloisell/Documents/developer/DSC-modernization/tenant-gitops-be808f
+# Verify commit is there: git log --oneline -3  (should show 6b0f6a5)
+GITOPS_TOKEN=<your-pat> git -c "http.extraHeader=Authorization: token $GITOPS_TOKEN" push origin feat/hnw-gitops
+```
+
+#### Remaining ordered steps (AI-driven once unblocked)
 
 | # | Step | Pre-req | Owner |
 |---|------|---------|-------|
-| D1 | Merge `feat/rl-agents-submodule` → `main` via PR | Branch is push-ready | AI |
-| D2 | Confirm `ARTIFACTORY_USER` + `ARTIFACTORY_PASSWORD` secrets set on repo | Required for build-and-push | Ryan |
-| D3 | Push to `main` → triggers `build-and-push.yml` → images pushed to `dbe8-docker-local` | D1 + D2 | AI |
-| D4 | Confirm Helm chart PR #7 merged into `tenant-gitops-be808f` (feat/hnw-gitops) | PR was opened Feb 2026 | Ryan |
-| D5 | If PR #7 not merged: push chart directly or re-open | D4 | AI |
-| D6 | Create `hnw-db-secret` in `be808f-dev` (`oc create secret`) | OpenShift access | Ryan + AI |
-| D7 | ArgoCD sync `be808f-hnw-dev` app — watch rollout | D3 + D4 + D6 | AI |
-| D8 | Smoke test: hit `hnw-be808f-dev.apps.emerald.devops.gov.bc.ca` + `/health/ready` | D7 | AI |
-| D9 | Fix any pod failures (CrashLoopBackOff, ImagePullBackOff, migration errors) | D7 | AI |
+| D1 | ~~Merge feat/rl-agents-submodule PR~~ | ~~done via PR #25~~ | ✅ |
+| D2 | Set 3 secrets + rerun build `24372243382` | Secrets set | Ryan |
+| D3 | Push GitOps `feat/hnw-gitops` → GitOps PR #7 CI re-runs | GITOPS_TOKEN with push access | Ryan |
+| D4 | Wait for build images to land in `dbe8-docker-local` | D2 | AI |
+| D5 | Wait for GitOps PR #7 CI to pass → merge it | D3 | AI |
+| D6 | Create `hnw-db-secret` in `be808f-dev` | OpenShift access + DB credentials | Ryan + AI |
+| D7 | ArgoCD auto-sync `be808f-hnw-dev` or trigger manually | D4 + D5 + D6 | AI |
+| D8 | Smoke test: `hnw-api-be808f-dev.apps.emerald.devops.gov.bc.ca/health/ready` | D7 | AI |
+| D9 | Fix any pod failures (ImagePullBackOff, migration errors, etc.) | D7 | AI |
 
-**Pre-session checklist for Ryan to verify before we start:**
-- [ ] `oc login` to Emerald works (`oc whoami` in be808f-dev)
-- [ ] Artifactory credentials: `artifacts.developer.gov.bc.ca` login works
-- [ ] GitHub secrets `ARTIFACTORY_USER` + `ARTIFACTORY_PASSWORD` are set on `rloisell/HelloNetworkWorld`
-- [ ] Check if tenant-gitops PR #7 was merged: `gh pr view 7 --repo bcgov-c/tenant-gitops-be808f`
-- [ ] Confirm DB credentials to use for `hnw-db-secret` (MariaDB root + hnw_user password)
+**Pre-session checklist:**
+- [ ] `oc login` to Emerald works (`oc whoami`)
+- [ ] GitHub secrets set on `rloisell/HelloNetworkWorld` (see Action 1 above)
+- [ ] GitOps branch pushed (see Action 2 above)
+- [ ] DB credentials ready for `hnw-db-secret` (MariaDB root + hnw_user password)
 
 ### Tier 2 — High Priority (Sprint 1)
 

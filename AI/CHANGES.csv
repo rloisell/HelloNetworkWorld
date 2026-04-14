@@ -86,3 +86,11 @@ AI/nextSteps.md,modified,Session 3: MASTER TODO updates + repo transition comman
 AI/WORKLOG.md,modified,Session 3: session 3 worklog appended
 AI/CHANGES.csv,modified,Session 3: appended session 3 entries
 AI/COMMIT_INFO.txt,modified,Session 3: appended session 3 commit metadata
+.github/workflows/build-and-push.yml,modified,Session Apr-13: fix secret names ARTIFACTORY_USER->USERNAME GITOPS_PAT->TOKEN (merged PR #25)
+tenant-gitops:charts/dsc-app/templates/_helpers.tpl,modified,Session Apr-13: remove name+instance from dsc-app.labels to fix Datree duplicate key failure
+tenant-gitops:charts/hnw-app/templates/_helpers.tpl,modified,Session Apr-13: remove instance from hnw-app.labels to fix Datree duplicate key failure
+tenant-gitops:.github/workflows/ci.yml,modified,Session Apr-13: add hnw-app helm lint + template steps for dev/test/prod
+tenant-gitops:.github/workflows/policy-enforcement.yaml,modified,Session Apr-13: add Policy Enforcement HNW App Datree step
+AI/nextSteps.md,modified,Session Apr-13: update D-steps with accurate Apr 13 progress and Ryan action items
+AI/WORKLOG.md,modified,Session Apr-13: append session worklog entry
+.github/copilot-instructions.md,modified,Session Apr-13: add Local Dev State Check to Session Startup Protocol
