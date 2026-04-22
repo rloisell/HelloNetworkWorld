@@ -58,3 +58,4 @@ diagrams/export/
 # ── Build artifacts ──────────────────────────────────────────────────────────
 *.log
 coverage/
+.dev-env
