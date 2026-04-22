@@ -54,7 +54,7 @@ GITOPS_TOKEN=<your-pat> git -c "http.extraHeader=Authorization: token $GITOPS_TO
 | D3 | Push GitOps `feat/hnw-gitops` → GitOps PR #7 CI re-runs | GITOPS_TOKEN with push access | Ryan |
 | D4 | Wait for build images to land in `dbe8-docker-local` | D2 | AI |
 | D5 | Wait for GitOps PR #7 CI to pass → merge it | D3 | AI |
-| D6 | Create `hnw-db-secret` in `be808f-dev` | OpenShift access + DB credentials | Ryan + AI |
+| D6 | Create `hnw-db-credentials` in `be808f-dev` | OpenShift access + DB credentials | Ryan + AI |
 | D7 | ArgoCD auto-sync `be808f-hnw-dev` or trigger manually | D4 + D5 + D6 | AI |
 | D8 | Smoke test: `hnw-api-be808f-dev.apps.emerald.devops.gov.bc.ca/health/ready` | D7 | AI |
 | D9 | Fix any pod failures (ImagePullBackOff, migration errors, etc.) | D7 | AI |
@@ -63,7 +63,19 @@ GITOPS_TOKEN=<your-pat> git -c "http.extraHeader=Authorization: token $GITOPS_TO
 - [ ] `oc login` to Emerald works (`oc whoami`)
 - [ ] GitHub secrets set on `rloisell/HelloNetworkWorld` (see Action 1 above)
 - [ ] GitOps branch pushed (see Action 2 above)
-- [ ] DB credentials ready for `hnw-db-secret` (MariaDB root + hnw_user password)
+- [ ] DB credentials ready for `hnw-db-credentials` secret (MariaDB root + hnw_user password)
+
+**D6 — Create DB secret (exact command):**
+```bash
+oc project be808f-dev
+oc create secret generic hnw-db-credentials \
+  --from-literal=connectionString="Server=hnw-db;Port=3306;Database=hnw_dev;User=hnw_user;Password=<password>;" \
+  --from-literal=rootPassword=<root-password> \
+  --from-literal=database=hnw_dev \
+  --from-literal=username=hnw_user \
+  --from-literal=password=<password>
+```
+Note: `imagePullSecret` (`artifactory-pull-secret`) is already in the namespace — no action needed.
 
 ### Tier 2 — High Priority (Sprint 1)
 
