@@ -39,28 +39,9 @@ These agents are in `.claude/agents/` and are specific to this project:
 | `openshift-health` | OCP resource inspection, health check patterns, oc/argocd commands |
 | `bc-gov-standards` | Enforces BC Gov design, security, deployment standards for be808f |
 
-## Shared subagents (via .github/agents submodule)
+## Shared subagents
 
-These agents are available from `rl-agents-n-skills` and apply to all projects:
-
-| Agent | When to use |
-|-------|-------------|
-| `security-architect` | Security reviews, OWASP, Vault, STRA/PIA |
-| `bc-gov-devops` | Helm, OpenShift, Artifactory, ArgoCD |
-| `bc-gov-iam` | OIDC PKCE, Keycloak, oidc-client-ts |
-| `session-workflow` | Session start/end, AI file updates |
-| `github-workflow` | Branches, PRs, CI diagnosis |
-| `diagram-generation` | draw.io, PlantUML, Mermaid |
-| `ci-cd-pipeline` | GitHub Actions, Trivy, yq GitOps |
-| `spec-kitty` | Spec-first WP workflow |
-| `ef-core` | EF Core, MariaDB/Pomelo, migrations |
-| `observability` | Serilog, health checks, Prometheus |
-| `local-dev` | dev-ctl multi-project manager, podman-compose, local troubleshooting |
-| `agent-evolution` | End-of-session knowledge updates |
-| `zero-trust-architect` | ZTA design, SASE architecture, ZTNA/CASB/SWG evaluation |
-| `network-architect` | Routing/switching design, WAN, BGP/OSPF, topology review |
-| `cisco-ios` | Cisco IOS/IOS-XE/NX-OS config, home lab, troubleshooting |
-| `sysadmin` | Solaris 9/10/11 SPARC (LDoms), RHEL, storage, boot issues |
+See `.github/agents/CLAUDE.md` (rl-agents-n-skills submodule) for all shared agent definitions.
 
 ## Architecture rules (project-specific)
 
